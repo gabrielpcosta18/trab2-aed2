@@ -1,11 +1,7 @@
 #include <stdlib.h>
 #include "dicionariaestatico.h"
 #include "vetorDinamico.h"
-
-typedef struct tupla {
-    void *chave;
-    void *dado;
-} TTupla;
+#include "tupla.h"
 
 typedef struct dado {
     TVetorDinamico *dado;
@@ -30,8 +26,8 @@ static void* Buscar(TDicionarioEstatico *dict, void *chave) {
         short comp = Compara(chave, e->chave); 
         
         if( comp == 0) return e->dado;
-        else if( comp < 0 ) fim = meio;
-        else inicio = meio; 
+        else if( comp < 0 ) fim = meio - 1;
+        else inicio = meio + 1; 
 
         int meio = (inicio + fim)/2;
     }

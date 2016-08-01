@@ -1,11 +1,7 @@
 #include <stdlib.h>
 #include "vetorDinamico.h"
 #include "dicionariodinamico.h"
-
-typedef struct tupla {
-    void *chave;
-    void *dado;
-} TTupla;
+#include "tupla.h"
 
 typedef struct dado {
     TVetorDinamico *dado;
