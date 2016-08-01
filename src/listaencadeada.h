@@ -4,8 +4,9 @@
 typedef struct listaEncadeada TListaEncadeada;
 typedef void (*TInserirListaEncadeada)(TListaEncadeada*, void*);
 typedef void* (*TBuscarListaEncadeada)(TListaEncadeada*, void*);
-typedef void (*TRemoverListaEncadeada)(TListaEncadeada*, void*);
+typedef short (*TRemoverListaEncadeada)(TListaEncadeada*, void*);
 typedef int (*TTamanhoListaEncadeada)(TListaEncadeada*);
+typedef void (*TImprimirListaEncadeada)(TListaEncadeada*);
 
 struct listaEncadeada
 {
@@ -15,6 +16,7 @@ struct listaEncadeada
     TRemoverListaEncadeada remover;
     TBuscarListaEncadeada buscar;
     TTamanhoListaEncadeada tamanho;
+    TImprimirListaEncadeada imprimir_lista;
 };
 
 TListaEncadeada* CriarListaEncadeada();

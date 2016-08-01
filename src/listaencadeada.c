@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "listaencadeada.h"
 #include "comparavel.h"
 
@@ -25,22 +26,22 @@ struct integer {
 static void Inserir(TListaEncadeada *l, void *e) {
     TDado *d = l->dado;
     TNo *inicio = d->inicio, *fim = d->fim;
-    
+
     TNo *novo = malloc(sizeof(TNo));
     novo->prox = NULL;
     novo->dado = e;
 
-    if(inicio != NULL) {           
+    if(inicio != NULL) {
         d->fim->prox = novo;
         d->fim = novo;
     }
     else {
         d->inicio = d->fim = novo;
-    }    
+    }
 }
 
 static void* Buscar(TListaEncadeada *l, void *e) {
-    TDado *d = l->dado;  
+    TDado *d = l->dado;
     TNo *viajante = d->inicio;
     TComparavel *c = e;
     while(viajante != NULL) {
@@ -51,14 +52,46 @@ static void* Buscar(TListaEncadeada *l, void *e) {
     return viajante;
 }
 
-static void Remover(TListaEncadeada *l, void *e) {
+void ImprimirLista(TListaEncadeada *l) {
+    TDado *d = l->dado;
+    TNo *pesq = d->inicio;
+    TComparavel *c;
+    while (pesq != NULL) {
+        c = (TComparavel*) pesq->dado;
+        c->imprimir(c);
 
+        if (pesq->prox != NULL)
+            printf(" -> ");
+        pesq = pesq->prox;
+    }
+}
+
+static short Remover(TListaEncadeada *l, void *e) {
+	TDado *d = l->dado;
+	TNo *antes, *atual;
+    TComparavel *c = (TComparavel*) e;
+	atual = antes = d->inicio;
+
+    while (atual != NULL) {
+        if (c->compara(c, atual->dado) == 0) {
+            if (atual != d->inicio) antes->prox = atual->prox;
+            else d->inicio = d->inicio->prox;
+
+            free(atual);
+            return 1;
+        }
+
+        antes = atual;
+        atual = atual->prox;
+    }
+
+    return 0;
 }
 
 static int Tamanho(TListaEncadeada *l) {
-    TDado *d = l->dado;  
+    TDado *d = l->dado;
     TNo *viajante = d->inicio;
-    
+
     int tam = 0;
     while(viajante != NULL) {
         viajante = viajante->prox;
@@ -82,11 +115,12 @@ TListaEncadeada* CriarListaEncadeada() {
 
     d->inicio = d->fim = NULL;
     l->dado = d;
-    
+
     l->inserir = Inserir;
     l->remover = Remover;
     l->buscar = Buscar;
     l->tamanho = Tamanho;
+    l->imprimir_lista = ImprimirLista;
 
     return l;
 }
