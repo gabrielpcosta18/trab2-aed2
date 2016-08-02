@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include "dicionariaestatico.h"
 #include "vetorDinamico.h"
-#include "tupla.h"
 
 typedef struct dado {
     TVetorDinamico *dado;
@@ -13,7 +12,7 @@ static short Compara(void *e1, void *e2) {
     return c->compara(e1, e2);
 }
 
-static void* Buscar(TDicionarioEstatico *dict, void *chave) {
+static void* Buscar(TDicionarioEstatico *dict, void *e) {
     TDado *d = dict->dado;
     TVetorDinamico *v = d->dado;
     
@@ -22,10 +21,10 @@ static void* Buscar(TDicionarioEstatico *dict, void *chave) {
     int meio = (inicio + fim)/2;
     
     while(inicio <= fim) {
-        TTupla *e = v->acessar(v, meio);
-        short comp = Compara(chave, e->chave); 
+        void *elemento = v->acessar(v, meio);
+        short comp = Compara(e, elemento); 
         
-        if( comp == 0) return e->dado;
+        if( comp == 0) return e;
         else if( comp < 0 ) fim = meio - 1;
         else inicio = meio + 1; 
 
@@ -36,18 +35,13 @@ static void* Buscar(TDicionarioEstatico *dict, void *chave) {
 }
 
 
-TDicionarioEstatico* CriarDicionarioEstatico(void **chaves, void **e,  int tam) {
+TDicionarioEstatico* CriarDicionarioEstatico(void **e,  int tam) {
     TDicionarioEstatico *dict = malloc(sizeof(TDicionarioEstatico));
     TDado *d = malloc(sizeof(TDado));
     TVetorDinamico *v = CriarVetorDinamico(tam);
     
-    for(int i = 0; i < tam; i++) {
-        TTupla *t = malloc(sizeof(TTupla));
-        t->chave = chaves[i];
-        t->dado = e[i];
-
-        v->inserir(v, t, i);
-    }
+    for(int i = 0; i < tam; i++) 
+        v->inserir(v, e[i], i);    
 
     d->dado = v;
     dict->dado = d;
