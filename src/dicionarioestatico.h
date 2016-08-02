@@ -10,6 +10,6 @@ struct dicionarioEstatico {
     TBuscarDicionarioEstatico buscar;
 };
 
-TDicionarioEstatico* CriarDicionarioEstatico(void **chaves, void **e,  int tam);
+TDicionarioEstatico* CriarDicionarioEstatico(void **e,  int tam);
 
 #endif

@@ -1,6 +1,7 @@
 #include <stdlib.h>
-#include "dicionariaestatico.h"
+#include "dicionarioestatico.h"
 #include "vetorDinamico.h"
+#include "comparavel.h"
 
 typedef struct dado {
     TVetorDinamico *dado;
@@ -23,12 +24,11 @@ static void* Buscar(TDicionarioEstatico *dict, void *e) {
     while(inicio <= fim) {
         void *elemento = v->acessar(v, meio);
         short comp = Compara(e, elemento); 
-        
         if( comp == 0) return e;
         else if( comp < 0 ) fim = meio - 1;
         else inicio = meio + 1; 
 
-        int meio = (inicio + fim)/2;
+        meio = (inicio + fim)/2;
     }
 
     return NULL;
@@ -45,6 +45,8 @@ TDicionarioEstatico* CriarDicionarioEstatico(void **e,  int tam) {
 
     d->dado = v;
     dict->dado = d;
+
+    dict->buscar = Buscar;
 
     return dict;
 }
