@@ -10,7 +10,6 @@ typedef struct No {
 
 typedef struct dado {
     TNo *inicio;
-    TNo *fim;
 	int count;
 } TDado;
 
@@ -26,18 +25,18 @@ struct integer {
 
 static int Inserir(TListaEncadeada *l, void *e) {
     TDado *d = l->dado;
-    TNo *inicio = d->inicio, *fim = d->fim;
+    TNo *inicio = d->inicio;
 
     TNo *novo = malloc(sizeof(TNo));
     novo->prox = NULL;
     novo->dado = e;
 
     if(inicio != NULL) {
-        d->fim->prox = novo;
-        d->fim = novo;
+        novo->prox = d->inicio;
+        d->inicio = novo;
     }
     else {
-        d->inicio = d->fim = novo;
+        d->inicio = novo;
     }
 	
 	d->count++;
@@ -109,7 +108,7 @@ TListaEncadeada* CriarListaEncadeada() {
     TListaEncadeada *l = malloc(sizeof(TListaEncadeada));
     TDado *d = malloc(sizeof(TDado));
 
-    d->inicio = d->fim = NULL;
+    d->inicio = NULL;
 	d->count = 0;
     l->dado = d;
 
