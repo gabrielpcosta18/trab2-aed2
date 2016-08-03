@@ -11,7 +11,7 @@ typedef struct No {
 typedef struct dado {
     TNo *inicio;
     TNo *fim;
-	int count;
+	int tamanho;
 } TDado;
 
 // For debug proposes. Remove later.
@@ -40,8 +40,8 @@ static int Inserir(TListaEncadeada *l, void *e) {
         d->inicio = d->fim = novo;
     }
 	
-	d->count++;
-	return d->count;
+	d->tamanho++;
+	return d->tamanho;
 }
 
 static void* Buscar(TListaEncadeada *l, void *e) {
@@ -80,7 +80,7 @@ static short Remover(TListaEncadeada *l, void *e) {
         if (c->compara(c, atual->dado) == 0) {
             if (atual != d->inicio) antes->prox = atual->prox;
             else d->inicio = d->inicio->prox;
-			d->count--;
+			d->tamanho--;
             free(atual);
             return 1;
         }
@@ -92,9 +92,25 @@ static short Remover(TListaEncadeada *l, void *e) {
     return 0;
 }
 
+void DestruirLista(TListaEncadeada *l) {
+	TDado *d = l->dado;
+	TNo *anterior, *atual;
+	anterior = atual = d->inicio;
+	
+	while (atual != NULL) {
+		atual = atual->prox;
+		free(anterior);
+	}
+	
+	free(d);
+	free(anterior);
+	free(atual);
+	free(l);
+}
+
 static int Tamanho(TListaEncadeada *l) {
     TDado *d = l->dado;
-    return d->count;
+    return d->tamanho;
 }
 
 static TNo* CriarNo() {
@@ -110,7 +126,7 @@ TListaEncadeada* CriarListaEncadeada() {
     TDado *d = malloc(sizeof(TDado));
 
     d->inicio = d->fim = NULL;
-	d->count = 0;
+	d->tamanho = 0;
     l->dado = d;
 
     l->inserir = Inserir;
@@ -118,6 +134,7 @@ TListaEncadeada* CriarListaEncadeada() {
     l->buscar = Buscar;
     l->tamanho = Tamanho;
     l->imprimir_lista = ImprimirLista;
-
+	l->destruir = DestruirLista;
+	
     return l;
 }

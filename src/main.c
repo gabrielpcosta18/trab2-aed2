@@ -29,6 +29,27 @@ int recuperarChave(Integer *i) {
 	return i->value;
 }
 
+int recuperarChaveJPW(const void *key) {
+    const char *ptr;
+    int val;
+    val = 0;
+    ptr = key;
+
+    while (*ptr != '\0') {
+        int tmp;
+        val = (val << 4) + (*ptr);
+
+        if (tmp = (val & 0xf0000000)) {
+            val = val ^ (tmp >> 24);
+            val = val ^ tmp;
+        }
+
+        ptr++;
+    }
+
+    return abs(val);
+}
+
 Integer* criarInt(int x) {
 	Integer *e = malloc(sizeof(Integer));
 	e->value = x;
@@ -43,7 +64,13 @@ Integer* criarInt(int x) {
 int main() {
     //TVetorDinamico *v = CriarVetorDinamico(1);
     //TListaEncadeada *v = CriarListaEncadeada();
-	int tam = 10;
+
+    printf("%d\n", recuperarChaveJPW("Lixeira"));
+    printf("%d\n", recuperarChaveJPW("Micael"));
+    printf("%d\n", recuperarChaveJPW("Opera"));
+
+
+	/*int tam = 10;
 	Integer **inteiros = malloc(sizeof(Integer)*tam);
 
     for(int i = 0; i < tam; i++) {
@@ -56,7 +83,7 @@ int main() {
 		Integer *e = dict->buscar(dict, criarInt(i));
     	if(e != NULL)
 			printf("%d ", e->value);
-	}
+	}*/
 
 
 	/*v->imprimir_lista(v);
