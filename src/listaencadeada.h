@@ -2,7 +2,7 @@
 #define _LISTA_ENCADEADA_
 
 typedef struct listaEncadeada TListaEncadeada;
-typedef void (*TInserirListaEncadeada)(TListaEncadeada*, void*);
+typedef int (*TInserirListaEncadeada)(TListaEncadeada*, void*);
 typedef void* (*TBuscarListaEncadeada)(TListaEncadeada*, void*);
 typedef short (*TRemoverListaEncadeada)(TListaEncadeada*, void*);
 typedef int (*TTamanhoListaEncadeada)(TListaEncadeada*);

@@ -11,6 +11,7 @@ typedef struct No {
 typedef struct dado {
     TNo *inicio;
     TNo *fim;
+	int count;
 } TDado;
 
 // For debug proposes. Remove later.
@@ -23,7 +24,7 @@ struct integer {
 	TComparaInteger compara;
 };*/
 
-static void Inserir(TListaEncadeada *l, void *e) {
+static int Inserir(TListaEncadeada *l, void *e) {
     TDado *d = l->dado;
     TNo *inicio = d->inicio, *fim = d->fim;
 
@@ -38,6 +39,9 @@ static void Inserir(TListaEncadeada *l, void *e) {
     else {
         d->inicio = d->fim = novo;
     }
+	
+	d->count++;
+	return d->count;
 }
 
 static void* Buscar(TListaEncadeada *l, void *e) {
@@ -76,7 +80,7 @@ static short Remover(TListaEncadeada *l, void *e) {
         if (c->compara(c, atual->dado) == 0) {
             if (atual != d->inicio) antes->prox = atual->prox;
             else d->inicio = d->inicio->prox;
-
+			d->count--;
             free(atual);
             return 1;
         }
@@ -90,15 +94,7 @@ static short Remover(TListaEncadeada *l, void *e) {
 
 static int Tamanho(TListaEncadeada *l) {
     TDado *d = l->dado;
-    TNo *viajante = d->inicio;
-
-    int tam = 0;
-    while(viajante != NULL) {
-        viajante = viajante->prox;
-        tam++;
-    }
-
-    return tam;
+    return d->count;
 }
 
 static TNo* CriarNo() {
@@ -114,6 +110,7 @@ TListaEncadeada* CriarListaEncadeada() {
     TDado *d = malloc(sizeof(TDado));
 
     d->inicio = d->fim = NULL;
+	d->count = 0;
     l->dado = d;
 
     l->inserir = Inserir;
