@@ -11,6 +11,7 @@ typedef struct dado {
 
     double fatorAgrupamento;
     double fatorCarga;
+    int ocupacao;
 }TDado;
 
 static TDado* CriarDado();
@@ -19,8 +20,11 @@ static TVetorDinamico* RecriarHash() {
 
 }
 
-static void verificarEstadoTabela() {
+static void verificarEstadoTabela(TDicionarioDinamico *dict) {
+    TDado *d = dict->dado;
+    TVetorDinamico *v = d->dado;
 
+    if(v->tamanho(v)/d->ocupacao >= d->fatorCarga) {}
 }
 
 static int Hash(int chave, int tam) {
@@ -34,10 +38,12 @@ static void Inserir(TDicionarioDinamico *dict, void *e) {
     TComparavel *c = e;
 
     int pos = Hash(c->recuperarChave(c), v->tamanho(v));
-    TListaEncadeada *le = v->acessar(v, pos);
-    le->inserir(le, e);
 
-    verificarEstadoTabela(dict);
+    TListaEncadeada *le = v->acessar(v, pos);
+
+    int tam = le->inserir(le, e);
+
+    verificarEstadoTabela(dict, tam);
 }
 
 static void* Buscar(TDicionarioDinamico *dict, void *e) {
@@ -52,7 +58,12 @@ static void* Buscar(TDicionarioDinamico *dict, void *e) {
 }
 
 static void Remover(TDicionarioDinamico *dict, void *e) {
+    TDado *d = dict->dado;
+    TVetorDinamico *v = d->dado;
+    TComparavel *c = e;
 
+    int pos = Hash(c->recuperarChave(c), v->tamanho(v));
+    TListaEncadeada *le = v->remover(v, e);
 }
 
 static TDado* CriarDado() {
@@ -63,7 +74,9 @@ static TDado* CriarDado() {
         v->inserir(v, CriarListaEncadeada(), i);
 
     d->dado = v;
-    d->fatorCarga = 0.8;
+    d->fatorCarga = 1;
+    d->fatorAgrupamento = 1;
+    d->ocupacao = 0;
 
     return d;
 }
