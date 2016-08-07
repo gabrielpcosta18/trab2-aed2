@@ -16,8 +16,15 @@ typedef struct dado {
 
 static TDado* CriarDado();
 
-static TVetorDinamico* RecriarHash() {
+static TVetorDinamico* RecriarHash(TDicionarioDinamico *dict) {
+    TDado *d = dict->dado;
+    TVetorDinamico *v = d->dado;
+    
+    TVetorDinamico *novoV = CriarVetorDinamico(v->tamanho(v)*2);
+    
+    for(int i = 0; i < v->tamanho(v); i++) {
 
+    }
 }
 
 static void verificarEstadoTabela(TDicionarioDinamico *dict) {
@@ -32,7 +39,7 @@ static int Hash(int chave, int tam) {
 }
 
 
-static void Inserir(TDicionarioDinamico *dict, void *e) {
+static void* Inserir(TDicionarioDinamico *dict, void *e) {
     TDado *d = dict->dado;
     TVetorDinamico *v = d->dado;
     TComparavel *c = e;
@@ -43,7 +50,9 @@ static void Inserir(TDicionarioDinamico *dict, void *e) {
 
     int tam = le->inserir(le, e);
 
-    verificarEstadoTabela(dict, tam);
+    verificarEstadoTabela(dict);
+
+    return e;
 }
 
 static void* Buscar(TDicionarioDinamico *dict, void *e) {
@@ -63,7 +72,8 @@ static void Remover(TDicionarioDinamico *dict, void *e) {
     TComparavel *c = e;
 
     int pos = Hash(c->recuperarChave(c), v->tamanho(v));
-    TListaEncadeada *le = v->remover(v, e);
+    TListaEncadeada *le = v->acessar(v, pos); 
+    le->remover(le, e);
 }
 
 static TDado* CriarDado() {
