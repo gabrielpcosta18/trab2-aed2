@@ -5,6 +5,7 @@ typedef struct dicionarioDinamico TDicionarioDinamico;
 typedef void* (*TInserirDicionarioDinamico)(TDicionarioDinamico*, void*);
 typedef void* (*TBuscarDicionarioDinamico)(TDicionarioDinamico*, void*);
 typedef void (*TRemoverDicionarioDinamico)(TDicionarioDinamico*, void*);
+typedef void (*TDestruirDicionarioDinamico)(TDicionarioDinamico*);
 
 struct dicionarioDinamico {
     void *dado;
@@ -12,7 +13,8 @@ struct dicionarioDinamico {
     TInserirDicionarioDinamico inserir;
     TBuscarDicionarioDinamico buscar;
     TRemoverDicionarioDinamico remover;
+    TDestruirDicionarioDinamico destruir;
 };
 
-TDicionarioDinamico* CriarDicionarioDinamico();
+TDicionarioDinamico* CriarDicionarioDinamico(int tam);
 #endif

@@ -1,10 +1,12 @@
 #include <stdlib.h>
+#include <time.h>
+#include <math.h>
 #include "vetorDinamico.h"
 #include "dicionariodinamico.h"
 #include "listaencadeada.h"
 #include "comparavel.h"
 
-#define VETOR_INIT_SIZE 10000001
+#define RANDOMIC_VERIFICATION 371
 
 typedef struct dado {
     TVetorDinamico *dado;
@@ -16,22 +18,36 @@ typedef struct dado {
 
 static TDado* CriarDado();
 
-static TVetorDinamico* RecriarHash(TDicionarioDinamico *dict) {
+static TDicionarioDinamico* RecriarHash(TDicionarioDinamico *dict) {
     TDado *d = dict->dado;
     TVetorDinamico *v = d->dado;
     
-    TVetorDinamico *novoV = CriarVetorDinamico(v->tamanho(v)*2);
+    TDicionarioDinamico *novoDict = CriarDicionarioDinamico(v->tamanho(v)*3);
     
     for(int i = 0; i < v->tamanho(v); i++) {
-
+        TListaEncadeada *l = v->acessar(v, i);
+        void* atual = l->remover_primeiro_elemento(l);
+        while(atual != NULL) {
+            novoDict->inserir(novoDict, atual);
+            atual = l->remover_primeiro_elemento(l);
+            novoDict->inserir(novoDict, atual);
+        }
     }
+
+    return novoDict;
 }
 
-static void verificarEstadoTabela(TDicionarioDinamico *dict) {
+static TDicionarioDinamico* verificarEstadoTabela(TDicionarioDinamico *dict) {
     TDado *d = dict->dado;
     TVetorDinamico *v = d->dado;
-
-    if(v->tamanho(v)/d->ocupacao >= d->fatorCarga) {}
+    
+    double calc = 0;
+    for(int i = 0; i < v->tamanho(v); i++) {
+        TListaEncadeada *l = v->acessar(v, i);
+        calc += pow(l->tamanho(l), 2);
+    }
+    if(calc/(d->ocupacao - d->fatorCarga) >= 3)
+        return RecriarHash(dict);
 }
 
 static int Hash(int chave, int tam) {
@@ -40,18 +56,25 @@ static int Hash(int chave, int tam) {
 
 
 static void* Inserir(TDicionarioDinamico *dict, void *e) {
+    srand(time(NULL));
+
     TDado *d = dict->dado;
     TVetorDinamico *v = d->dado;
     TComparavel *c = e;
 
+    int boolean = rand()%RANDOMIC_VERIFICATION == 0;
     int pos = Hash(c->recuperarChave(c), v->tamanho(v));
 
     TListaEncadeada *le = v->acessar(v, pos);
-
     int tam = le->inserir(le, e);
 
-    verificarEstadoTabela(dict);
+    if(boolean) {
+        TDicionarioDinamico *ddict = verificarEstadoTabela(dict);
+        if(ddict != NULL) {
 
+        }
+    }
+        
     return e;
 }
 
@@ -76,11 +99,22 @@ static void Remover(TDicionarioDinamico *dict, void *e) {
     le->remover(le, e);
 }
 
-static TDado* CriarDado() {
-    TDado *d = malloc(sizeof(TDado));
-    TVetorDinamico *v = CriarVetorDinamico(VETOR_INIT_SIZE);
+static void DestruirDicionario(TDicionarioDinamico *dict) {
+    TVetorDinamico *v = dict->dado;
+    for(int i = 0; i < v->tamanho(v); i++) {
+        TListaEncadeada *l = v->acessar(v, i);
+        l->destruir(l);
+    }
+    //v->destruir(v);
+    free(v);
+    free(dict);
+}
 
-    for(int i = 0; i < VETOR_INIT_SIZE; i++)
+static TDado* CriarDado(int tam) {
+    TDado *d = malloc(sizeof(TDado));
+    TVetorDinamico *v = CriarVetorDinamico(tam);
+
+    for(int i = 0; i < tam; i++)
         v->inserir(v, CriarListaEncadeada(), i);
 
     d->dado = v;
@@ -91,13 +125,14 @@ static TDado* CriarDado() {
     return d;
 }
 
-TDicionarioDinamico* CriarDicionarioDinamico() {
+TDicionarioDinamico* CriarDicionarioDinamico(int tam) {
     TDicionarioDinamico *dict = malloc(sizeof(TDicionarioDinamico));
-    dict->dado = CriarDado();
+    dict->dado = CriarDado(tam);
 
     dict->inserir = Inserir;
     dict->buscar = Buscar;
     dict->remover = Remover;
+    dict->destruir = DestruirDicionario;
 
     return dict;
 }
