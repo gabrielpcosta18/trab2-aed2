@@ -92,17 +92,16 @@ static short Remover(TListaEncadeada *l, void *e) {
 }
 
 static void* RemoverPrimeiroElemento(TListaEncadeada *l) {
-	TDado *d = l->dado;
-	TNo *antes, *atual;
-	atual = d->inicio;
-
+    TDado *d = l->dado; 
+	TNo *atual;
+	
+    atual = d->inicio;
     if(d->inicio != NULL) {
         d->inicio = d->inicio->prox;
-        atual->prox = NULL;
         d->tamanho--;
     }
     
-    return atual;
+    return atual->dado;
 }
 
 void DestruirLista(TListaEncadeada *l) {

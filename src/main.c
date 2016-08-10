@@ -4,6 +4,8 @@
 #include "listaencadeada.h"
 #include "comparavel.h"
 #include "dicionarioestatico.h"
+#include "dicionariodinamico.h"
+#include <time.h>
 
 typedef struct integer Integer;
 typedef short (*TComparaInteger)(Integer*, Integer*);
@@ -62,48 +64,17 @@ Integer* criarInt(int x) {
 
 
 int main() {
-    //TVetorDinamico *v = CriarVetorDinamico(1);
-    //TListaEncadeada *v = CriarListaEncadeada();
+    srand(time(NULL));
+    TDicionarioDinamico *dict = CriarDicionarioDinamico(11);
 
-    printf("%d\n", recuperarChaveJPW("Lixeira"));
-    printf("%d\n", recuperarChaveJPW("Micael"));
-    printf("%d\n", recuperarChaveJPW("Opera"));
-
-
-	/*int tam = 10;
-	Integer **inteiros = malloc(sizeof(Integer)*tam);
-
-    for(int i = 0; i < tam; i++) {
-		inteiros[i] = criarInt(i);
+    for(int i = 0; i < 100; i++) {
+        Integer *in = criarInt(i);
+        Integer *aux = dict->inserir(dict, in);
+        //printf("%d ", aux->value);
     }
-
-	TDicionarioEstatico *dict = CriarDicionarioEstatico(inteiros, tam);
-
-	for(int i = 0; i < tam*2; i++) {
-		Integer *e = dict->buscar(dict, criarInt(i));
-    	if(e != NULL)
-			printf("%d ", e->value);
-	}*/
-
-
-	/*v->imprimir_lista(v);
-	printf("\n");
-	v->remover(v, criarInt(0));
-	v->remover(v, criarInt(1));
-	v->remover(v, criarInt(2));
-	v->remover(v, criarInt(3));
-	v->remover(v, criarInt(4));
-	*/
-	/*
-    for(int i = 0; i < 101; i++) {
-        Integer *e = malloc(sizeof(Integer));
-        e->value = i;
-        e->compara = ComparaInteger;
-        Integer *r = v->buscar(v, e);
-        if(r != NULL)
-            printf("Result: %d ", r->value);
-        else printf(" Achou nao");
-    }*/
+    Integer *in = criarInt(65);
+    Integer *aux = dict->buscar(dict, in);
+    printf("%d ", aux->value);
 
     return 0;
 }

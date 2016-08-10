@@ -7,7 +7,7 @@
 #include "listaencadeada.h"
 #include "comparavel.h"
 
-#define RANDOMIC_VERIFICATION 371
+#define RANDOMIC_VERIFICATION 2
 
 typedef struct dado {
     TVetorDinamico *dado;
@@ -19,22 +19,69 @@ typedef struct dado {
 
 static TDado* CriarDado();
 
+static void AnaliseDicionario(TDicionarioDinamico *dict) {
+    TDado *d = dict->dado;
+    TVetorDinamico *v = d->dado;
+
+    double fatorCargaAte10Maior = 0;
+    double fatorCargaAte30Maior = 0;
+    double fatorCargaMaior30 = 0;
+    double fatorCargaAte10Menor = 0;
+    double fatorCargaAte30Menor = 0;
+    double fatorCargaMenor30 = 0;
+    double fatorCarga = 0, calc = 0;
+    
+    fatorCarga = ((double)d->ocupacao + 1)/(double)v->tamanho(v);
+    printf("Tamanho da tabela: %d Ocupacao: %d\n", v->tamanho(v), d->ocupacao);     
+    for(int i = 0; i < v->tamanho(v); i++) {
+        TListaEncadeada *l = v->acessar(v, i);
+        
+        calc = ((double) l->tamanho(l))/fatorCarga;
+        printf("Calc: %f Tamanho Lista encadeada: %d\n", calc, l->tamanho(l));
+        if(calc > 1.0 && calc < 1.10)
+            fatorCargaAte10Maior += 1.0;
+        else if(calc > 1.0 && calc < 1.30)
+            fatorCargaAte30Maior += 1.0;
+        else if(calc > 1.30)
+            fatorCargaMaior30 += 1.0;
+        else if(calc < 1.0 && calc > 0.9)
+            fatorCargaAte10Menor += 1.0;
+        else if(calc < 1.0 && calc > 0.7)
+            fatorCargaAte30Menor += 1.0;
+        else if(calc < 0.7)
+            fatorCargaMenor30 += 1.0;
+    }
+
+    printf("Fator Carga até 10 maior: %f\n", fatorCargaAte10Maior/(v->tamanho(v)*1.0));
+    printf("Fator Carga até 30 maior: %f\n", fatorCargaAte30Maior/(v->tamanho(v)*1.0));
+    printf("Fator Carga maior 30: %f\n", fatorCargaMaior30/(v->tamanho(v)*1.0));
+    printf("Fator Carga até 10 menor: %f\n", fatorCargaAte10Menor/(v->tamanho(v)*1.0));
+    printf("Fator Carga até 30 menor: %f\n", fatorCargaAte30Menor/(v->tamanho(v)*1.0));
+    printf("Fator Carga menor 30: %f\n", fatorCargaMenor30/(v->tamanho(v)*1.0));
+}
+
 static TDicionarioDinamico* RecriarHash(TDicionarioDinamico *dict) {
     TDado *d = dict->dado;
     TVetorDinamico *v = d->dado;
     
     TDicionarioDinamico *novoDict = CriarDicionarioDinamico(v->tamanho(v)*3);
-    
+    TListaEncadeada *l;
+    void* atual;
+
     for(int i = 0; i < v->tamanho(v); i++) {
-        TListaEncadeada *l = v->acessar(v, i);
-        void* atual = l->remover_primeiro_elemento(l);
+        l = v->acessar(v, i);
+        l->imprimir_lista(l);
+        atual = l->remover_primeiro_elemento(l);
         while(atual != NULL) {
             novoDict->inserir(novoDict, atual);
             atual = l->remover_primeiro_elemento(l);
-            novoDict->inserir(novoDict, atual);
         }
     }
 
+    printf("VELHO\n");
+    AnaliseDicionario(dict);
+    printf("NOVO\n");
+    AnaliseDicionario(novoDict);
     return novoDict;
 }
 
@@ -47,8 +94,11 @@ static TDicionarioDinamico* verificarEstadoTabela(TDicionarioDinamico *dict) {
         TListaEncadeada *l = v->acessar(v, i);
         calc += pow(l->tamanho(l), 2);
     }
+
+    //printf(" Valor Calculado: %f\n", calc/(d->ocupacao - d->fatorCarga));
     if(calc/(d->ocupacao - d->fatorCarga) >= 3)
         return RecriarHash(dict);
+    return NULL;
 }
 
 static int Hash(int chave, int tam) {
@@ -72,7 +122,7 @@ static void* Inserir(TDicionarioDinamico *dict, void *e) {
             dict = ddict;
         }
     }
-        
+    d->ocupacao++;
     return e;
 }
 
