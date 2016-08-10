@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <stdio.h>
 #include "vetorDinamico.h"
 #include "dicionariodinamico.h"
 #include "listaencadeada.h"
@@ -55,23 +56,20 @@ static int Hash(int chave, int tam) {
 }
 
 
-static void* Inserir(TDicionarioDinamico *dict, void *e) {
-    srand(time(NULL));
-
+static void* Inserir(TDicionarioDinamico *dict, void *e) { 
     TDado *d = dict->dado;
     TVetorDinamico *v = d->dado;
     TComparavel *c = e;
 
-    int boolean = rand()%RANDOMIC_VERIFICATION == 0;
+    int boolean = (rand()%RANDOMIC_VERIFICATION) == 0;
     int pos = Hash(c->recuperarChave(c), v->tamanho(v));
 
     TListaEncadeada *le = v->acessar(v, pos);
     int tam = le->inserir(le, e);
-
     if(boolean) {
         TDicionarioDinamico *ddict = verificarEstadoTabela(dict);
         if(ddict != NULL) {
-
+            dict = ddict;
         }
     }
         
