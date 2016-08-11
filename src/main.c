@@ -7,17 +7,19 @@
 #include "comparavel.h"
 #include "dicionarioestatico.h"
 #include "stringaed.h"
+#include "dicionariodinamico.h"
+#include <time.h>
 
 short caracterEhValido(char c) {
     return (97 <= c && c <= 122) //a-z
         || (65 <= c && c <= 90) //A-Z
-        || (48 <= c && c <= 57) //números 0-9
+        || (48 <= c && c <= 57) //nï¿½meros 0-9
         || (45 == c)
         || (128 <= c && c <= 154) //caracteres especiais (1)
         || (160 <= c && c <= 165)
         || (181 <= c && c <= 183)
         || (198 <= c && c <= 199)
-        || (224 == c || 229 == c) // Ó, Õ
+        || (224 == c || 229 == c) // ï¿½, ï¿½
         || (233 == c);
 }
 
@@ -26,7 +28,7 @@ int lerPalavra(FILE *fp, char *word)
 	short typing=1;
     char c;
 	//auxiliares do tipo char;
-	char *del = " \t\r\n`~!@#$%^&*()-_+=\\|][{}'\":;/?.>,<\“\”1234567890";
+	char *del = " \t\r\n`~!@#$%^&*()-_+=\\|][{}'\":;/?.>,<\ï¿½\ï¿½1234567890";
 
 	int i = 0; word[i] = '\0';
 	do{
@@ -111,6 +113,9 @@ int main() {
     for(int i = 0; i < tam; i++) {
 		inteiros[i] = criarInt(i);
     }
+    Integer *in = criarInt(7);
+    Integer *aux = dict->buscar(dict, in);
+    printf("%d ", aux->value);
 
 	TDicionarioEstatico *dict = CriarDicionarioEstatico(inteiros, tam);
 
