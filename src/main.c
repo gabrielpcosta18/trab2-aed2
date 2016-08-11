@@ -4,71 +4,128 @@
 #include "listaencadeada.h"
 #include "comparavel.h"
 #include "dicionarioestatico.h"
+#include "stringaed.h"
+#include <string.h>
 
-typedef struct integer Integer;
-typedef short (*TComparaInteger)(Integer*, Integer*);
-typedef void (*TImprimirInteger)(Integer*);
-typedef int (*TRecuperarChaveInteger)(Integer*);
 
-struct integer {
-	int value;
-	TComparaInteger compara;
-	TImprimirInteger imprimir;
-	TRecuperarChaveInteger recuperarChave;
-};
-
-short ComparaInteger(Integer *e1, Integer *e2) {
-	return e1->value == e2->value? 0: (e1->value < e2->value)? -1: 1;
+short caracterEhValido(char c) {
+    return (97 <= c && c <= 122) //a-z
+        || (65 <= c && c <= 90) //A-Z
+        || (48 <= c && c <= 57) //números 0-9
+        || (45 == c)
+        || (128 <= c && c <= 154) //caracteres especiais (1)
+        || (160 <= c && c <= 165)
+        || (181 <= c && c <= 183)
+        || (198 <= c && c <= 199)
+        || (224 == c || 229 == c) // Ó, Õ
+        || (233 == c);
 }
 
-void imprimirInt(Integer *i) {
-	printf("%d", i->value);
+int lerPalavra(FILE *fp, char *word)
+{
+	short typing=1;
+    char c;
+	//auxiliares do tipo char;
+	char *del = " \t\r\n`~!@#$%^&*()-_+=\\|][{}'\":;/?.>,<\“\”1234567890";
+
+	int i = 0; word[i] = '\0';
+	do{
+		c = fgetc(fp);
+		c = tolower(c);
+		if (strchr(del, c)==NULL){
+			word[i++] = c;
+		}else if(c == '-' && i){
+			word[i++]=c;
+		}else if(c == '\n'){
+			word[i] = '\0'; typing=0;
+		}else if(c == ' ' && i ){
+			word[i] = '\0'; typing=0;
+		}else if(c == EOF){
+			word[i] = '\0'; typing=0;
+		}
+	}while(typing && c != EOF);
+
+	return c;
 }
 
-int recuperarChave(Integer *i) {
-	return i->value;
-}
+char *ler_linha(char *line, int size, FILE* f) {
+    char c;
+    int count = -1;
 
-int recuperarChaveJPW(const void *key) {
-    const char *ptr;
-    int val;
-    val = 0;
-    ptr = key;
-
-    while (*ptr != '\0') {
-        int tmp;
-        val = (val << 4) + (*ptr);
-
-        if (tmp = (val & 0xf0000000)) {
-            val = val ^ (tmp >> 24);
-            val = val ^ tmp;
+    while((c = fgetc(f)) != EOF) {
+        count++;
+        if(c == '\n') break;
+        if (count < size - 1) {
+            line[count] = c;
         }
+        else break;
 
-        ptr++;
     }
 
-    return abs(val);
+    line[count] = '\0';
+
+    if (c == EOF) return NULL;
+    else return line;
 }
 
-Integer* criarInt(int x) {
-	Integer *e = malloc(sizeof(Integer));
-	e->value = x;
-	e->compara = ComparaInteger;
-	e->imprimir = imprimirInt;
-	e->recuperarChave = recuperarChave;
+int compara_string_aed(const void *e1, const void *e2) {
+    TStringAED *a = *(TStringAED**) e1;
+    TStringAED *b = *(TStringAED**) e2;
 
-	return e;
+	return strcmp(a->string, b->string);
 }
 
+// a b c d e f g h i j k l m n o p q r s t u v w x y z
 
 int main() {
+    TListaEncadeada *l = CriarListaEncadeadaOrdenada(ComparaStringAED);
+    l->inserir(l, CriarStringAED("g"));
+    l->inserir(l, CriarStringAED("j"));
+    l->inserir(l, CriarStringAED("k"));
+    l->inserir(l, CriarStringAED("e"));
+    l->inserir(l, CriarStringAED("q"));
+
+    l->imprimir_lista(l);
     //TVetorDinamico *v = CriarVetorDinamico(1);
     //TListaEncadeada *v = CriarListaEncadeada();
+    /*FILE *fw = fopen("../base/resultados.txt", "w");
+    FILE *fstop = fopen("../base/stopwords_pt", "r");
+    int i = 0;
+    char *pal;
+    char *stopword = malloc(sizeof(char) * 30);
 
-    printf("%d\n", recuperarChaveJPW("Lixeira"));
-    printf("%d\n", recuperarChaveJPW("Micael"));
-    printf("%d\n", recuperarChaveJPW("Opera"));
+    TStringAED **stopwords = malloc(sizeof(TStringAED) * 392);
+    TDicionarioEstatico *sw_dicio;
 
+    for (;lerPalavra(fstop, stopword) != EOF; i++) {
+        stopwords[i] = CriarStringAED(stopword);
+        stopword = malloc(sizeof(char) * 30);
+    }
+
+    qsort(stopwords, 392, sizeof(void*), compara_string_aed);
+
+    sw_dicio = CriarDicionarioEstatico((void**)stopwords, 392);
+
+    fclose(fw);
+    fclose(fstop);
+    free(stopword);
+
+    i = 0;
+    pal = malloc(sizeof(char) * 300);
+
+	while(lerPalavra((FILE*)stdin, pal) != EOF){
+        if (sw_dicio->buscar(sw_dicio, CriarStringAED(pal)) == NULL) {
+            if (strcmp(pal, "PA") == 0) {
+
+            }
+        }
+
+        free(pal);
+        pal = malloc(sizeof(char) * 300);
+
+	}
+
+	printf("%d stopwords", i);
 
 	/*int tam = 10;
 	Integer **inteiros = malloc(sizeof(Integer)*tam);
@@ -104,6 +161,5 @@ int main() {
             printf("Result: %d ", r->value);
         else printf(" Achou nao");
     }*/
-
     return 0;
 }

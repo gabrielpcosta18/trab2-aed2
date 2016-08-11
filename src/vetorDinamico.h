@@ -7,6 +7,7 @@ typedef struct vetorDinamico TVetorDinamico;
 typedef void (*TInserir)(TVetorDinamico*,void*, int);
 typedef void* (*TAcessar)(TVetorDinamico*, int);
 typedef int (*TTamanho)(TVetorDinamico*);
+typedef void (*TImprimirVetorDinamico)(TVetorDinamico*);
 //construtor
 TVetorDinamico *CriarVetorDinamico(int);
 
@@ -15,11 +16,12 @@ void DestruirVetorDinamico(TVetorDinamico*);
 
 struct vetorDinamico{
 	void *dado;
-	
+
 	int tam;
 	TInserir inserir;
 	TAcessar acessar;
 	TTamanho tamanho;
+	TImprimirVetorDinamico imprimir;
 };
 
 #endif

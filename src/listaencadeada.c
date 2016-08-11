@@ -13,6 +13,8 @@ typedef struct dado {
 	int tamanho;
 } TDado;
 
+static short ComparaElementosListaEncadeada(void*, void*);
+
 // For debug proposes. Remove later.
 /*typedef struct integer Integer;
 
@@ -28,16 +30,39 @@ static int Inserir(TListaEncadeada *l, void *e) {
     TNo *inicio = d->inicio;
 
     TNo *novo = malloc(sizeof(TNo));
-    novo->prox = NULL;
     novo->dado = e;
+    novo->prox = NULL;
 
-    if(inicio != NULL) {
-        novo->prox = d->inicio;
-        d->inicio = novo;
+    if (inicio != NULL) {
+        if (l->compara_elementos == NULL) {
+            novo->prox = d->inicio;
+            d->inicio = novo;
+        }
+        else {
+            TNo *pesq;
+            pesq = inicio;
+
+            if (l->compara_elementos(novo->dado, inicio->dado) > 0) {
+                novo->prox = d->inicio;
+                d->inicio = novo;
+            }
+            else {
+                if (d->inicio->prox == NULL) {
+                    d->inicio->prox = novo;
+                }
+                else {
+                    while(pesq->prox != NULL) {
+                        if (l->compara_elementos(novo->dado, pesq->prox->dado) > 0) break;
+                        pesq = pesq->prox;
+                    }
+
+                    novo->prox = pesq->prox;
+                    pesq->prox = novo;
+                }
+            }
+        }
     }
-    else {
-        d->inicio = novo;
-    }
+    else d->inicio = novo;
 
 	d->tamanho++;
 	return d->tamanho;
@@ -134,6 +159,13 @@ TListaEncadeada* CriarListaEncadeada() {
     l->tamanho = Tamanho;
     l->imprimir_lista = ImprimirLista;
 	l->destruir = DestruirLista;
+	l->compara_elementos = NULL;
 
+    return l;
+}
+
+TListaEncadeada* CriarListaEncadeadaOrdenada(TComparaElementosListaEncadeada compara_elementos) {
+    TListaEncadeada *l = CriarListaEncadeada();
+    l->compara_elementos = compara_elementos;
     return l;
 }

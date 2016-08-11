@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "vetorDinamico.h"
 #include <math.h>
+#include "comparavel.h"
 
 typedef struct dado {
 	int tam;
@@ -15,7 +16,7 @@ static void redimensionar(TVetorDinamico* v, int novoTam) {
 	int i;
 	for(i = 0; i < ((TDado*)(v->dado))->tam; i++) {
 		d->elementos[i] = ((TDado*)(v->dado))->elementos[i];
-	} 
+	}
 
 	free(v->dado);
 	v->dado = d;
@@ -25,6 +26,7 @@ static void redimensionar(TVetorDinamico* v, int novoTam) {
 static void Inserir(TVetorDinamico* v, void* d, int pos) {
 	TDado *dado = v->dado;
 	if(pos >= dado->tam) {
+        printf("VETOR REDIMENSIONOU");
 		int calc = pow(2, floor(log2(pos) + 2));
 		redimensionar(v, calc);
 	}
@@ -42,6 +44,16 @@ static void* Acessar(TVetorDinamico* v, int pos) {
 static int Tamanho(TVetorDinamico* v) {
 	return ((TDado*)v->dado)->tam;
 }
+static void Imprimir(TVetorDinamico *v) {
+    TDado *d = v->dado;
+    TComparavel *c;
+    for (int i = 0; i < d->tam; i++) {
+        c = d->elementos[i];
+        c->imprimir(c);
+        printf("\n");
+    }
+}
+
 
 //construtor
 TVetorDinamico* CriarVetorDinamico(int tam) {
@@ -49,12 +61,18 @@ TVetorDinamico* CriarVetorDinamico(int tam) {
 	TDado *d = malloc(sizeof(TDado));
 
 	d->elementos = malloc(sizeof(void*)*tam);
+
+	for (int i = 0; i < tam; i++) {
+        d->elementos[i] = NULL;
+	}
+
 	d->tam = tam;
 	v->dado = d;
 
 	v->inserir = Inserir;
 	v->acessar = Acessar;
 	v->tamanho = Tamanho;
+	v->imprimir = Imprimir;
 	return v;
 }
 

@@ -4,7 +4,7 @@
 #include "listaencadeada.h"
 #include "comparavel.h"
 
-#define VETOR_INIT_SIZE 10000001
+#define VETOR_INIT_SIZE 100001
 
 typedef struct dado {
     TVetorDinamico *dado;
@@ -43,7 +43,7 @@ static void Inserir(TDicionarioDinamico *dict, void *e) {
 
     int tam = le->inserir(le, e);
 
-    verificarEstadoTabela(dict, tam);
+    verificarEstadoTabela(dict);
 }
 
 static void* Buscar(TDicionarioDinamico *dict, void *e) {
@@ -63,7 +63,8 @@ static void Remover(TDicionarioDinamico *dict, void *e) {
     TComparavel *c = e;
 
     int pos = Hash(c->recuperarChave(c), v->tamanho(v));
-    TListaEncadeada *le = v->remover(v, e);
+    TListaEncadeada *le = v->acessar(v, pos);
+    le->remover(le, e);
 }
 
 static TDado* CriarDado() {

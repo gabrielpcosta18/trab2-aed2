@@ -16,13 +16,13 @@ static short Compara(void *e1, void *e2) {
 static void* Buscar(TDicionarioEstatico *dict, void *e) {
     TDado *d = dict->dado;
     TVetorDinamico *v = d->dado;
-
     int tam = v->tamanho(v);
     int inicio = 0, fim = tam - 1;
     int meio = (inicio + fim)/2;
 
     while(inicio <= fim) {
         void *elemento = v->acessar(v, meio);
+
         short comp = Compara(e, elemento);
         if( comp == 0) return e;
         else if( comp < 0 ) fim = meio - 1;
