@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
 #include "vetorDinamico.h"
 #include "listaencadeada.h"
 #include "comparavel.h"
 #include "dicionarioestatico.h"
 #include "stringaed.h"
-#include <string.h>
-
 
 short caracterEhValido(char c) {
     return (97 <= c && c <= 122) //a-z
@@ -48,54 +48,29 @@ int lerPalavra(FILE *fp, char *word)
 	return c;
 }
 
-char *ler_linha(char *line, int size, FILE* f) {
-    char c;
-    int count = -1;
-
-    while((c = fgetc(f)) != EOF) {
-        count++;
-        if(c == '\n') break;
-        if (count < size - 1) {
-            line[count] = c;
-        }
-        else break;
-
-    }
-
-    line[count] = '\0';
-
-    if (c == EOF) return NULL;
-    else return line;
-}
-
-int compara_string_aed(const void *e1, const void *e2) {
+int compara_string_aed(const void *e1, const void *e2) { // compara strings armazenadas especificamente em um array de ponteiros void (void**)
     TStringAED *a = *(TStringAED**) e1;
     TStringAED *b = *(TStringAED**) e2;
 
 	return strcmp(a->string, b->string);
 }
 
-// a b c d e f g h i j k l m n o p q r s t u v w x y z
+typedef struct {
+    int x;
+} TInteger;
 
 int main() {
-    TListaEncadeada *l = CriarListaEncadeadaOrdenada(ComparaStringAED);
-    l->inserir(l, CriarStringAED("g"));
-    l->inserir(l, CriarStringAED("j"));
-    l->inserir(l, CriarStringAED("k"));
-    l->inserir(l, CriarStringAED("e"));
-    l->inserir(l, CriarStringAED("q"));
-
-    l->imprimir_lista(l);
     //TVetorDinamico *v = CriarVetorDinamico(1);
     //TListaEncadeada *v = CriarListaEncadeada();
-    /*FILE *fw = fopen("../base/resultados.txt", "w");
-    FILE *fstop = fopen("../base/stopwords_pt", "r");
-    int i = 0;
+    //FILE *fw = fopen("../base/resultados.txt", "w");
+    int i = 0, n_docs_total = 0, n_palavras_pa = 0;
     char *pal;
     char *stopword = malloc(sizeof(char) * 30);
 
     TStringAED **stopwords = malloc(sizeof(TStringAED) * 392);
     TDicionarioEstatico *sw_dicio;
+
+    FILE *fstop = fopen("../base/stopwords_pt", "r");
 
     for (;lerPalavra(fstop, stopword) != EOF; i++) {
         stopwords[i] = CriarStringAED(stopword);
@@ -106,26 +81,29 @@ int main() {
 
     sw_dicio = CriarDicionarioEstatico((void**)stopwords, 392);
 
-    fclose(fw);
+    //fclose(fw);
     fclose(fstop);
     free(stopword);
 
     i = 0;
-    pal = malloc(sizeof(char) * 300);
+    pal = malloc(sizeof(char) * 30);
 
 	while(lerPalavra((FILE*)stdin, pal) != EOF){
         if (sw_dicio->buscar(sw_dicio, CriarStringAED(pal)) == NULL) {
-            if (strcmp(pal, "PA") == 0) {
-
+            if (strcmp(pal, "pa") == 0) {
+                n_docs_total++;
+                n_palavras_pa = 0;
+            }
+            else {
+                n_palavras_pa = 0;
             }
         }
 
-        free(pal);
-        pal = malloc(sizeof(char) * 300);
-
+        //free(pal);
+        //pal = malloc(sizeof(char) * 300);
 	}
 
-	printf("%d stopwords", i);
+	printf("%d paginas", n_docs_total);
 
 	/*int tam = 10;
 	Integer **inteiros = malloc(sizeof(Integer)*tam);
