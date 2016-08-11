@@ -67,12 +67,12 @@ int main() {
     srand(time(NULL));
     TDicionarioDinamico *dict = CriarDicionarioDinamico(11);
 
-    for(int i = 0; i < 100; i++) {
+    for(int i = 0; i < 50; i++) {
         Integer *in = criarInt(i);
         Integer *aux = dict->inserir(dict, in);
         //printf("%d ", aux->value);
     }
-    Integer *in = criarInt(65);
+    Integer *in = criarInt(7);
     Integer *aux = dict->buscar(dict, in);
     printf("%d ", aux->value);
 

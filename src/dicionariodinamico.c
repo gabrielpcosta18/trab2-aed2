@@ -7,13 +7,10 @@
 #include "listaencadeada.h"
 #include "comparavel.h"
 
-#define RANDOMIC_VERIFICATION 2
+#define RANDOMIC_VERIFICATION 371
 
 typedef struct dado {
     TVetorDinamico *dado;
-
-    double fatorAgrupamento;
-    double fatorCarga;
     int ocupacao;
 }TDado;
 
@@ -65,24 +62,22 @@ static TDicionarioDinamico* RecriarHash(TDicionarioDinamico *dict) {
     TVetorDinamico *v = d->dado;
     
     TDicionarioDinamico *novoDict = CriarDicionarioDinamico(v->tamanho(v)*3);
-    TListaEncadeada *l;
     void* atual;
 
     for(int i = 0; i < v->tamanho(v); i++) {
-        l = v->acessar(v, i);
-        l->imprimir_lista(l);
+        TListaEncadeada *l = v->acessar(v, i);
         atual = l->remover_primeiro_elemento(l);
+        
         while(atual != NULL) {
             novoDict->inserir(novoDict, atual);
-            atual = l->remover_primeiro_elemento(l);
+            //atual = l->remover_primeiro_elemento(l);
+            atual = NULL;
         }
     }
 
-    printf("VELHO\n");
     AnaliseDicionario(dict);
-    printf("NOVO\n");
-    AnaliseDicionario(novoDict);
-    return novoDict;
+    //return novoDict;
+    return NULL;
 }
 
 static TDicionarioDinamico* verificarEstadoTabela(TDicionarioDinamico *dict) {
@@ -95,8 +90,9 @@ static TDicionarioDinamico* verificarEstadoTabela(TDicionarioDinamico *dict) {
         calc += pow(l->tamanho(l), 2);
     }
 
-    //printf(" Valor Calculado: %f\n", calc/(d->ocupacao - d->fatorCarga));
-    if(calc/(d->ocupacao - d->fatorCarga) >= 3)
+    double fatorCarga = ((double)d->ocupacao + 1)/(double)v->tamanho(v);
+    
+    if(calc/(d->ocupacao - fatorCarga) >= 3)
         return RecriarHash(dict);
     return NULL;
 }
@@ -166,8 +162,6 @@ static TDado* CriarDado(int tam) {
         v->inserir(v, CriarListaEncadeada(), i);
 
     d->dado = v;
-    d->fatorCarga = 1;
-    d->fatorAgrupamento = 1;
     d->ocupacao = 0;
 
     return d;

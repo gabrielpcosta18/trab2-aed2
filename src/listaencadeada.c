@@ -67,6 +67,7 @@ void ImprimirLista(TListaEncadeada *l) {
             printf(" -> ");
         pesq = pesq->prox;
     }
+    printf("\n");
 }
 
 static short Remover(TListaEncadeada *l, void *e) {
@@ -99,9 +100,11 @@ static void* RemoverPrimeiroElemento(TListaEncadeada *l) {
     if(d->inicio != NULL) {
         d->inicio = d->inicio->prox;
         d->tamanho--;
-    }
+        atual->prox = NULL;
     
-    return atual->dado;
+        return atual->dado;
+    }
+    else return NULL;
 }
 
 void DestruirLista(TListaEncadeada *l) {
