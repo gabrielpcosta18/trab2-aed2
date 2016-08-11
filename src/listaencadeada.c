@@ -72,6 +72,9 @@ static void* Buscar(TListaEncadeada *l, void *e) {
     TDado *d = l->dado;
     TNo *viajante = d->inicio;
     TComparavel *c = e;
+
+
+
     while(viajante != NULL) {
         if(c->compara(viajante->dado, e) == 0) return viajante->dado;
         viajante = viajante->prox;
@@ -84,15 +87,18 @@ void ImprimirLista(TListaEncadeada *l) {
     TDado *d = l->dado;
     TNo *pesq = d->inicio;
     TComparavel *c;
-    while (pesq != NULL) {
-        c = (TComparavel*) pesq->dado;
-        c->imprimir(c);
 
-        if (pesq->prox != NULL)
-            printf(" -> ");
-        pesq = pesq->prox;
+    if (d->inicio == NULL) printf("vazio");
+    else {
+        while (pesq != NULL) {
+            c = (TComparavel*) pesq->dado;
+            c->imprimir(c);
+
+            if (pesq->prox != NULL)
+                printf(" -> ");
+            pesq = pesq->prox;
+        }
     }
-    printf("\n");
 }
 
 static short Remover(TListaEncadeada *l, void *e) {
@@ -118,18 +124,19 @@ static short Remover(TListaEncadeada *l, void *e) {
 }
 
 static void* RemoverPrimeiroElemento(TListaEncadeada *l) {
-    TDado *d = l->dado; 
+    TDado *d = l->dado;
 	TNo *atual;
-	
+
     atual = d->inicio;
     if(d->inicio != NULL) {
         d->inicio = d->inicio->prox;
         d->tamanho--;
         atual->prox = NULL;
-    
+
         return atual->dado;
     }
-    else return NULL;
+
+    return NULL;
 }
 
 void DestruirLista(TListaEncadeada *l) {
