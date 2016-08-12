@@ -88,7 +88,7 @@ void ImprimirLista(TListaEncadeada *l) {
     TNo *pesq = d->inicio;
     TComparavel *c;
 
-    if (d->inicio == NULL) printf("vazio");
+    if (d->inicio == NULL) printf(" vazio ");
     else {
         while (pesq != NULL) {
             c = (TComparavel*) pesq->dado;

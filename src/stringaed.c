@@ -13,7 +13,7 @@ void imprimirStringAED(TStringAED *i) {
 	printf("%s", i->string);
 }
 
-int recuperarChaveJPW(TStringAED *key) {
+int recuperarChavePJW(TStringAED *key) {
     const char *ptr;
     int val;
     val = 0;
@@ -39,7 +39,7 @@ TStringAED* CriarStringAED(char *s) {
 	e->string = s;
 	e->compara = ComparaStringAED;
 	e->imprimir = imprimirStringAED;
-	e->recuperarChave = recuperarChaveJPW;
+	e->recuperarChave = recuperarChavePJW;
 
 	return e;
 }

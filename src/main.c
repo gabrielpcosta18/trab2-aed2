@@ -29,7 +29,7 @@ int lerPalavra(FILE *fp, char *word)
 	short typing=1;
     char c;
 	//auxiliares do tipo char;
-	char *del = " \t\r\n`~!@#$%^&*()-_+=\\|][{}'\":;/?.>,<\�\�1234567890";
+	char *del = " \t\r\n`~!@#$%^&*()-_+=\\|][{}'\":;/?.>,<1234567890";
 
 	int i = 0; word[i] = '\0';
 	do{
@@ -72,7 +72,7 @@ TInteiro *CriarInteiro(int x) {
 int main() {
     printf("Inicio\n");
     FILE *fw = fopen("../base/resultados.txt", "w");
-    FILE *base = fopen("../base/baseTeste", "r");
+    FILE *base = fopen("../base/baseGuarani", "r");
     int i = 0, n_pags_total = 0, n_palavras_pa = 0;
     char *pal;
     char *stopword = malloc(sizeof(char) * 30);
@@ -97,11 +97,11 @@ int main() {
     i = 0;
     pal = malloc(sizeof(char) * 30);
 
-    TDicionarioDinamico *dict = CriarDicionarioDinamico(100);
+    TDicionarioDinamico *dict = CriarDicionarioDinamico(5);
 
     TVetorDinamico *palavras_por_pag = CriarVetorDinamico(300);
     int primeiraExec = 1;
-	while(lerPalavra((FILE*)base, pal) != EOF){
+	while(lerPalavra((FILE*)stdin, pal) != EOF){
         if (sw_dicio->buscar(sw_dicio, CriarStringAED(pal)) == NULL) {
             if (strcmp(pal, "pa") == 0) {
                 if (!primeiraExec) {
@@ -113,14 +113,17 @@ int main() {
                 n_palavras_pa = 0;
             }
             else {
-                fprintf(fw, "%s\n", pal);
+                //fprintf(fw, "%s\n", pal);
+
                 TTermo *termonovo = CriarTermo(pal);
                 TTermo *termobusca = dict->buscar(&dict, termonovo);
 
-                if (termobusca == NULL)
+                if (termobusca == NULL) {
+                    termonovo->atualizar_termo(termonovo, n_pags_total);
                     dict->inserir(&dict, termonovo);
+                }
                 else {
-                    //termobusca->atualizar_termo(termobusca, n_pags_total);
+                    termobusca->atualizar_termo(termobusca, n_pags_total);
                 }
 
                 n_palavras_pa++;
@@ -130,9 +133,10 @@ int main() {
         pal = malloc(sizeof(char) * 30);
 	}
 
-    dict->imprimir(dict);
+    //dict->imprimir(dict);
 
     fclose(fw);
-    printf("EHNOIS");
+
+
     return 0;
 }
