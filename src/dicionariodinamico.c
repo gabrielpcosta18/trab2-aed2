@@ -129,8 +129,8 @@ static TDicionarioDinamico* verificarEstadoTabela(TDicionarioDinamico **dict) {
 
     double fatorCarga = ((double)d->ocupacao + 1)/(double)v->tamanho(v);
     double agrupamento = (calc/d->ocupacao) - fatorCarga;
-    printf("%f %f", agrupamento, log10(v->tamanho(v)));
-    if(agrupamento >= log10(v->tamanho(v)))
+    //printf("Agrupamento:%f Critério: %f\n", agrupamento, log10(v->tamanho(v))*10);
+    if(agrupamento >= log10(v->tamanho(v))*10)
         return RecriarHash(dict);
     return NULL;
 }
@@ -146,10 +146,9 @@ static void* Inserir(TDicionarioDinamico **dict, void *e) {
     int tam = le->inserir(le, e);
 
     if(boolean) {
-        printf("Verificar estado Tabela\n");
         TDicionarioDinamico *ddict = verificarEstadoTabela(dict);
-        printf("ddict != NULL -> %d\n", ddict != NULL);
         if(ddict != NULL) {
+            //printf("Rehash\n");
             *dict = ddict;
         }
     }
