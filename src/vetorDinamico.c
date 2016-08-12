@@ -2,6 +2,7 @@
 #include "vetorDinamico.h"
 #include <math.h>
 #include "comparavel.h"
+#include "stdio.h"
 
 typedef struct dado {
 	int tam;
@@ -78,7 +79,12 @@ TVetorDinamico* CriarVetorDinamico(int tam) {
 
 //destrutor
 void DestruirVetorDinamico(TVetorDinamico* v) {
-	free(((TDado*)(v->dado))->elementos);
-	free(v->dado);
+	TDado *d = v->dado;
+	
+	for(int i = 0; i < d->tam; i++) {
+		//free(d->elementos[i]);
+	}
+	free(d->elementos);
+	free(d);
 	free(v);
 }

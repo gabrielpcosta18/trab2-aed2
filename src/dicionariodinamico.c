@@ -7,7 +7,7 @@
 #include "listaencadeada.h"
 #include "comparavel.h"
 
-#define REHASH_A_CADA_N_ELEMENTOS 5000
+#define RANDOMIC_VERIFICATION 371
 
 typedef struct dado {
     TVetorDinamico *dadov;
@@ -15,8 +15,6 @@ typedef struct dado {
 }TDado;
 
 static TDado* CriarDado();
-
-static void DestruirDicionario(TDicionarioDinamico *dict);
 
 static void AnaliseDicionario(TDicionarioDinamico *dict) {
     TDado *d = dict->dado;
@@ -51,14 +49,28 @@ static void AnaliseDicionario(TDicionarioDinamico *dict) {
             fatorCargaMenor30 += 1.0;
     }
 
-
-
     printf("Fator Carga at%c 10 maior: %f\n", 130, fatorCargaAte10Maior/(v->tamanho(v)*1.0));
     printf("Fator Carga at%c 30 maior: %f\n", 130, fatorCargaAte30Maior/(v->tamanho(v)*1.0));
     printf("Fator Carga maior 30: %f\n", fatorCargaMaior30/(v->tamanho(v)*1.0));
     printf("Fator Carga at%c 10 menor: %f\n", 130, fatorCargaAte10Menor/(v->tamanho(v)*1.0));
     printf("Fator Carga at%c 30 menor: %f\n", 130, fatorCargaAte30Menor/(v->tamanho(v)*1.0));
     printf("Fator Carga menor 30: %f\n\n", 130, fatorCargaMenor30/(v->tamanho(v)*1.0));
+}
+
+
+static void DestruirDicionario(TDicionarioDinamico **dict) {
+    TDado *d = (*dict)->dado;
+    TVetorDinamico *v = d->dadov;
+    TListaEncadeada *l;
+    for(int i = 0; i < v->tamanho(v); i++) {
+        l = v->acessar(v, i);
+        l->destruir(l);
+    }
+    //v->destruir(v);
+    //free(l);
+    //free(v);
+    DestruirVetorDinamico(d->dadov);
+    //free(dict);
 }
 
 static int Hash(int chave, int tam) {
@@ -70,20 +82,19 @@ static void* InserirSemReHash(TDicionarioDinamico **dict, void *e) {
     TDado *d = (*dict)->dado;
     TVetorDinamico *v = d->dadov;
     TComparavel *c = e;
-    //int boolean = (rand()%RANDOMIC_VERIFICATION) == 0;
+
     int pos = Hash(c->recuperarChave(c), v->tamanho(v));
 
     TListaEncadeada *le = v->acessar(v, pos);
-    int tam = le->inserir(le, e);
-
+    le->inserir(le, e);
+    
     d->ocupacao++;
     return e;
 }
 
-static TDicionarioDinamico* RecriarHash(TDicionarioDinamico *dict) {
-    TDado *d = dict->dado;
+static TDicionarioDinamico* RecriarHash(TDicionarioDinamico **dict) {
+    TDado *d = (*dict)->dado;
     TVetorDinamico *v = d->dadov;
-    //AnaliseDicionario(dict);
 
     TDicionarioDinamico *novoDict = CriarDicionarioDinamico(v->tamanho(v)*2);
     TDado *dd = novoDict->dado;
@@ -97,15 +108,12 @@ static TDicionarioDinamico* RecriarHash(TDicionarioDinamico *dict) {
         while(atual != NULL) {
             InserirSemReHash(&novoDict, atual);
             atual = l->remover_primeiro_elemento(l);
-            //atual = NULL;
         }
     }
 
     DestruirDicionario(dict);
 
-    //AnaliseDicionario(novoDict);
     return novoDict;
-    //return NULL;
 }
 
 static TDicionarioDinamico* verificarEstadoTabela(TDicionarioDinamico **dict) {
@@ -120,9 +128,10 @@ static TDicionarioDinamico* verificarEstadoTabela(TDicionarioDinamico **dict) {
     }
 
     double fatorCarga = ((double)d->ocupacao + 1)/(double)v->tamanho(v);
-
-    if((calc/d->ocupacao - fatorCarga) >= 3)
-        return RecriarHash(*dict);
+    double agrupamento = (calc/d->ocupacao) - fatorCarga;
+    printf("%f %f", agrupamento, log10(v->tamanho(v)));
+    if(agrupamento >= log10(v->tamanho(v)))
+        return RecriarHash(dict);
     return NULL;
 }
 
@@ -130,25 +139,26 @@ static void* Inserir(TDicionarioDinamico **dict, void *e) {
     TDado *d = (*dict)->dado;
     TVetorDinamico *v = d->dadov;
     TComparavel *c = e;
-    int boolean = ((d->ocupacao + 1) % REHASH_A_CADA_N_ELEMENTOS) == 0;
+    int boolean = ((d->ocupacao + 1) % RANDOMIC_VERIFICATION) == 0;
     int pos = Hash(c->recuperarChave(c), v->tamanho(v));
 
     TListaEncadeada *le = v->acessar(v, pos);
     int tam = le->inserir(le, e);
 
     if(boolean) {
+        printf("Verificar estado Tabela\n");
         TDicionarioDinamico *ddict = verificarEstadoTabela(dict);
+        printf("ddict != NULL -> %d\n", ddict != NULL);
         if(ddict != NULL) {
             *dict = ddict;
         }
     }
-
     d->ocupacao++;
     return e;
 }
 
-static void* Buscar(TDicionarioDinamico *dict, void *e) {
-    TDado *d = dict->dado;
+static void* Buscar(TDicionarioDinamico **dict, void *e) {
+    TDado *d = (*dict)->dado;
     TVetorDinamico *v = d->dadov;
     TComparavel *c = e;
 
@@ -166,21 +176,6 @@ static void Remover(TDicionarioDinamico *dict, void *e) {
     int pos = Hash(c->recuperarChave(c), v->tamanho(v));
     TListaEncadeada *le = v->acessar(v, pos);
     le->remover(le, e);
-}
-
-static void DestruirDicionario(TDicionarioDinamico *dict) {
-    TDado *d = dict->dado;
-    TVetorDinamico *v = d->dadov;
-    TListaEncadeada *l;
-    for(int i = 0; i < v->tamanho(v); i++) {
-        l = v->acessar(v, i);
-        l->destruir(l);
-    }
-    //v->destruir(v);1
-    free(l);
-    free(v);
-    DestruirVetorDinamico(d->dadov);
-    free(dict);
 }
 
 static TDado* CriarDado(int tam) {

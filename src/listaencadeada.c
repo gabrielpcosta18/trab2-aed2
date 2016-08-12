@@ -131,9 +131,10 @@ static void* RemoverPrimeiroElemento(TListaEncadeada *l) {
     if(d->inicio != NULL) {
         d->inicio = d->inicio->prox;
         d->tamanho--;
-        atual->prox = NULL;
 
-        return atual->dado;
+        void *retorno = atual->dado;
+        free(atual);
+        return retorno;
     }
 
     return NULL;
@@ -145,7 +146,9 @@ void DestruirLista(TListaEncadeada *l) {
 	anterior = atual = d->inicio;
 
 	while (atual != NULL) {
+        anterior = atual;
 		atual = atual->prox;
+        free(anterior->dado);
 		free(anterior);
 	}
 
