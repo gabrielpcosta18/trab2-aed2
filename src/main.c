@@ -96,7 +96,7 @@ int main() {
     i = 0;
     pal = malloc(sizeof(char) * 30);
 
-    TDicionarioDinamico *dict = CriarDicionarioDinamico(1000);
+    TDicionarioDinamico *dict = CriarDicionarioDinamico(100);
 
     TVetorDinamico *palavras_por_pag = CriarVetorDinamico(300);
     int primeiraExec = 1;
@@ -112,7 +112,7 @@ int main() {
                 n_palavras_pa = 0;
             }
             else {
-                fprintf(fw, "%s\n", pal);
+                //fprintf(fw, "%s\n", pal);
                 dict->inserir(&dict, CriarStringAED(pal));
                 n_palavras_pa++;
             }
