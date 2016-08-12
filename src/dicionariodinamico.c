@@ -87,7 +87,7 @@ static void* InserirSemReHash(TDicionarioDinamico **dict, void *e) {
 
     TListaEncadeada *le = v->acessar(v, pos);
     le->inserir(le, e);
-    
+
     d->ocupacao++;
     return e;
 }
@@ -95,7 +95,7 @@ static void* InserirSemReHash(TDicionarioDinamico **dict, void *e) {
 static TDicionarioDinamico* RecriarHash(TDicionarioDinamico **dict) {
     TDado *d = (*dict)->dado;
     TVetorDinamico *v = d->dadov;
-    
+
     TDicionarioDinamico *novoDict = CriarDicionarioDinamico(v->tamanho(v)*2);
     TDado *dd = novoDict->dado;
     int toc = dd->dadov->tamanho(dd->dadov);
@@ -112,7 +112,7 @@ static TDicionarioDinamico* RecriarHash(TDicionarioDinamico **dict) {
     }
 
     DestruirDicionario(dict);
-    AnaliseDicionario(novoDict);
+    //AnaliseDicionario(novoDict);
     return novoDict;
 }
 
@@ -129,12 +129,12 @@ static TDicionarioDinamico* verificarEstadoTabela(TDicionarioDinamico **dict) {
 
     double fatorCarga = ((double)d->ocupacao + 1)/(double)v->tamanho(v);
     double agrupamento = (calc/d->ocupacao) - fatorCarga;
-    AnaliseDicionario(*dict);
-    
-    printf("Agrupamento:%f Critério: %f Fator Carga: %f\n", agrupamento, log(v->tamanho(v))*9, fatorCarga);
-    if(agrupamento >= log(v->tamanho(v))*9) 
+    //AnaliseDicionario(*dict);
+
+    //printf("Agrupamento:%f Critério: %f Fator Carga: %f\n", agrupamento, log(v->tamanho(v))*9, fatorCarga);
+    if(agrupamento >= log(v->tamanho(v))*9)
         return RecriarHash(dict);
-    
+
     return NULL;
 }
 
@@ -155,7 +155,7 @@ static void* Inserir(TDicionarioDinamico **dict, void *e) {
             *dict = ddict;
             d = (*dict)->dado;
             v = d->dadov;
-            printf("Tam: %d\n", v->tamanho(v));
+            //printf("Tam: %d\n", v->tamanho(v));
         }
     }
     d->ocupacao++;

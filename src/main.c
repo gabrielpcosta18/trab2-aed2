@@ -101,7 +101,7 @@ int main() {
 
     TVetorDinamico *palavras_por_pag = CriarVetorDinamico(300);
     int primeiraExec = 1;
-	while(lerPalavra((FILE*)stdin, pal) != EOF){
+	while(lerPalavra((FILE*)base, pal) != EOF){
         if (sw_dicio->buscar(sw_dicio, CriarStringAED(pal)) == NULL) {
             if (strcmp(pal, "pa") == 0) {
                 if (!primeiraExec) {
@@ -136,7 +136,51 @@ int main() {
     //dict->imprimir(dict);
 
     fclose(fw);
-    while(1);
-    printf("EHNOIS");
+
+    char option = 'a';
+    int exit = 0;
+
+    while (1) {
+        printf("1) Pesquisar por palavra no dicionario.\n2) Exibir estatisticas do dicionario.\n3) Sair do programa.\n\nInsira sua opcao: ");
+
+        option = getchar();
+        fflush(stdin);
+        system("cls");
+
+        switch(option){
+            case '1':
+                printf("Digite a palavra que deseja buscar (max 29 caracteres): ");
+                char palavrabusca[30];
+                gets(palavrabusca);
+                fflush(stdin);
+                strlwr(palavrabusca);
+                TTermo *termobusca = CriarTermo(palavrabusca);
+                TTermo *termoaux = dict->buscar(&dict, termobusca);
+
+                if (termoaux != NULL) {
+
+                    termoaux->imprimir(termoaux);
+                }
+                else {
+                    printf("Palavra não encontrada.");
+                }
+                break;
+            case '2':
+                break;
+            case '3':
+                exit = 1;
+                break;
+            default:
+                printf("Opcao Invalida. Escolha novamente.\n\n");
+        }
+
+        if(exit) break;
+
+        printf("\nPressione qualquer tecla para voltar ao menu principal.");
+        getch();
+
+        system("cls");
+    }
+
     return 0;
 }
