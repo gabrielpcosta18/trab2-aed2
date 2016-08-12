@@ -7,7 +7,7 @@
 #include "listaencadeada.h"
 #include "comparavel.h"
 
-#define REHASH_A_CADA_N_ELEMENTOS 5000
+#define REHASH_A_CADA_N_ELEMENTOS 75
 
 typedef struct dado {
     TVetorDinamico *dadov;
@@ -130,7 +130,8 @@ static void* Inserir(TDicionarioDinamico **dict, void *e) {
     TDado *d = (*dict)->dado;
     TVetorDinamico *v = d->dadov;
     TComparavel *c = e;
-    int boolean = ((d->ocupacao + 1) % REHASH_A_CADA_N_ELEMENTOS) == 0;
+    int fatorCarga = (d->ocupacao) / v->tamanho(v) + 1;
+    int boolean = ((d->ocupacao + 1) % fatorCarga) == 0;
     int pos = Hash(c->recuperarChave(c), v->tamanho(v));
 
     TListaEncadeada *le = v->acessar(v, pos);
