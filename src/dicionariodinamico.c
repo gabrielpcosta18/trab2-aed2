@@ -29,12 +29,12 @@ static void AnaliseDicionario(TDicionarioDinamico *dict) {
     double fatorCarga = 0, calc = 0;
 
     fatorCarga = ((double)d->ocupacao + 1)/(double)v->tamanho(v);
-    printf("Tamanho da tabela: %d | Ocupacao: %d | Fator de Carga: %f\n", v->tamanho(v), d->ocupacao, fatorCarga);
+    //printf("Tamanho da tabela: %d | Ocupacao: %d | Fator de Carga: %f\n", v->tamanho(v), d->ocupacao, fatorCarga);
     for(int i = 0; i < v->tamanho(v); i++) {
         TListaEncadeada *l = v->acessar(v, i);
 
         calc = ((double) l->tamanho(l))/fatorCarga;
-        printf("Calc: %f Tamanho Lista encadeada: %d\n", calc, l->tamanho(l));
+        //printf("Calc: %f Tamanho Lista encadeada: %d\n", calc, l->tamanho(l));
         if(calc > 1.0 && calc < 1.10)
             fatorCargaAte10Maior += 1.0;
         else if(calc > 1.0 && calc < 1.30)
@@ -95,7 +95,7 @@ static void* InserirSemReHash(TDicionarioDinamico **dict, void *e) {
 static TDicionarioDinamico* RecriarHash(TDicionarioDinamico **dict) {
     TDado *d = (*dict)->dado;
     TVetorDinamico *v = d->dadov;
-
+    
     TDicionarioDinamico *novoDict = CriarDicionarioDinamico(v->tamanho(v)*2);
     TDado *dd = novoDict->dado;
     int toc = dd->dadov->tamanho(dd->dadov);
@@ -112,7 +112,7 @@ static TDicionarioDinamico* RecriarHash(TDicionarioDinamico **dict) {
     }
 
     DestruirDicionario(dict);
-
+    AnaliseDicionario(novoDict);
     return novoDict;
 }
 
@@ -129,10 +129,11 @@ static TDicionarioDinamico* verificarEstadoTabela(TDicionarioDinamico **dict) {
 
     double fatorCarga = ((double)d->ocupacao + 1)/(double)v->tamanho(v);
     double agrupamento = (calc/d->ocupacao) - fatorCarga;
-    if(agrupamento >= log(v->tamanho(v))*9) {
-        printf("Agrupamento:%f Critério: %f\n", agrupamento, log(v->tamanho(v))*9);
+    AnaliseDicionario(*dict);
+    
+    printf("Agrupamento:%f Critério: %f Fator Carga: %f\n", agrupamento, log(v->tamanho(v))*9, fatorCarga);
+    if(agrupamento >= log(v->tamanho(v))*9) 
         return RecriarHash(dict);
-    }
     
     return NULL;
 }

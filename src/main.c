@@ -97,7 +97,7 @@ int main() {
     i = 0;
     pal = malloc(sizeof(char) * 30);
 
-    TDicionarioDinamico *dict = CriarDicionarioDinamico(5);
+    TDicionarioDinamico *dict = CriarDicionarioDinamico(200);
 
     TVetorDinamico *palavras_por_pag = CriarVetorDinamico(300);
     int primeiraExec = 1;
@@ -136,7 +136,7 @@ int main() {
     //dict->imprimir(dict);
 
     fclose(fw);
-
-
+    while(1);
+    printf("EHNOIS");
     return 0;
 }
