@@ -13,14 +13,14 @@ void imprimirStringAED(TStringAED *i) {
 	printf("%s", i->string);
 }
 
-int recuperarChavePJW(TStringAED *key) {
-    const char *ptr;
-    int val;
+unsigned long recuperarChavePJW(TStringAED *key) {
+    const unsigned char *ptr;
+    unsigned long val;
     val = 0;
     ptr = key->string;
 
     while (*ptr != '\0') {
-        int tmp;
+        unsigned long tmp;
         val = (val << 4) + (*ptr);
 
         if ((tmp = (val & 0xf0000000))) {
@@ -31,15 +31,28 @@ int recuperarChavePJW(TStringAED *key) {
         ptr++;
     }
 
-    return abs(val);
+    return val;
 }
+
+unsigned long recuperarChaveDJB2(TStringAED *key) //
+{
+    unsigned char *str = key->string;
+    unsigned long hash = 5381;
+    int c;
+
+    while (c = *str++)
+        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+    return hash;
+}
+
 
 TStringAED* CriarStringAED(char *s) {
 	TStringAED *e = malloc(sizeof(TStringAED));
 	e->string = s;
 	e->compara = ComparaStringAED;
 	e->imprimir = imprimirStringAED;
-	e->recuperarChave = recuperarChavePJW;
+	e->recuperarChave = recuperarChaveDJB2;
 
 	return e;
 }

@@ -37,7 +37,7 @@ static short ComparaTermo(TTermo *t1, TTermo *t2) {
     return s->compara(s, t2->dado->palavra);
 }
 
-static int RecuperarChaveTermo(TTermo *t) {
+static unsigned long RecuperarChaveTermo(TTermo *t) {
     TStringAED *s = t->dado->palavra;
     return s->recuperarChave(s);
 }

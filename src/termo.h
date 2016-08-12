@@ -9,7 +9,7 @@ typedef struct dado TDadoTermo;
 
 typedef short (*TComparaTermo)(TTermo*, TTermo*);
 typedef void (*TImprimirTermo)(TTermo*);
-typedef int (*TRecuperarChaveTermo)(TTermo*);
+typedef unsigned long (*TRecuperarChaveTermo)(TTermo*);
 typedef void (*TAtualizarTermo)(TTermo*, int);
 
 double tf(TTermo *t, int pag, int n_total_palavras_pag);

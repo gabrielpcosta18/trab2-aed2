@@ -4,10 +4,10 @@
 typedef struct stringaed TStringAED;
 typedef short (*TComparaStringAED)(void*, void*);
 typedef void (*TImprimirStringAED)(TStringAED*);
-typedef int (*TRecuperarChaveStringAED)(TStringAED*);
+typedef unsigned long (*TRecuperarChaveStringAED)(TStringAED*);
 
 struct stringaed {
-	char *string;
+	unsigned char *string;
 	TComparaStringAED compara;
 	TImprimirStringAED imprimir;
 	TRecuperarChaveStringAED recuperarChave;

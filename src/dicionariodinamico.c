@@ -6,8 +6,8 @@
 #include "dicionariodinamico.h"
 #include "listaencadeada.h"
 #include "comparavel.h"
-
-#define RANDOMIC_VERIFICATION 40
+#define RAZAO_AUREA 1.618033988
+#define RANDOMIC_VERIFICATION 2000
 
 typedef struct dado {
     TVetorDinamico *dadov;
@@ -67,7 +67,7 @@ void AnaliseDicionario(TDicionarioDinamico *dict) {
     printf("Fator Carga maior 30: %f\n", fatorCargaMaior30/(v->tamanho(v)*1.0));
     printf("Fator Carga at%c 10 menor: %f\n", 130, fatorCargaAte10Menor/(v->tamanho(v)*1.0));
     printf("Fator Carga at%c 30 menor: %f\n", 130, fatorCargaAte30Menor/(v->tamanho(v)*1.0));
-    printf("Fator Carga menor 30: %f\n\n", 130, fatorCargaMenor30/(v->tamanho(v)*1.0));
+    printf("Fator Carga menor 30: %f\n\n", fatorCargaMenor30/(v->tamanho(v)*1.0));
 }
 
 
@@ -86,7 +86,7 @@ static void DestruirDicionario(TDicionarioDinamico **dict) {
     //free(dict);
 }
 
-static int Hash(int chave, int tam) {
+static int Hash(unsigned long chave, int tam) {
     return chave % tam;
 }
 
@@ -109,7 +109,7 @@ static TDicionarioDinamico* RecriarHash(TDicionarioDinamico **dict) {
     TDado *d = (*dict)->dado;
     TVetorDinamico *v = d->dadov;
 
-    TDicionarioDinamico *novoDict = CriarDicionarioDinamico(v->tamanho(v)*2);
+    TDicionarioDinamico *novoDict = CriarDicionarioDinamico((int)(v->tamanho(v) * 2));
     TDado *dd = novoDict->dado;
     int toc = dd->dadov->tamanho(dd->dadov);
     void* atual;
@@ -140,12 +140,14 @@ static TDicionarioDinamico* verificarEstadoTabela(TDicionarioDinamico **dict) {
         calc += pow(l->tamanho(l), 2);
     }
 
-    double fatorCarga = ((double)d->ocupacao + 1)/(double)v->tamanho(v);
+    //double fatorCarga = (double)d->ocupacao/(double)v->tamanho(v);
+    double fatorCarga = 3.0;
     double agrupamento = (calc/d->ocupacao) - fatorCarga;
     //AnaliseDicionario(*dict);
 
-    //printf("Agrupamento:%f Critério: %f Fator Carga: %f\n", agrupamento, log(v->tamanho(v))*9, fatorCarga);
-    if(agrupamento >= log(v->tamanho(v))*9)
+    //printf("Agrupamento:%f Criterio: %f Fator Carga: %f\n", agrupamento, log(v->tamanho(v))*5, fatorCarga);
+    printf("Agrupamento:%f Criterio: %d Fator Carga: %f\n", agrupamento, 4, fatorCarga);
+    if(agrupamento >= 2)
         return RecriarHash(dict);
 
     return NULL;
@@ -171,6 +173,7 @@ static void* Inserir(TDicionarioDinamico **dict, void *e) {
             //printf("Tam: %d\n", v->tamanho(v));
         }
     }
+
     d->ocupacao++;
     return e;
 }

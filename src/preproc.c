@@ -19,7 +19,7 @@ short CompararTfidf(TPreproc *p1, TPreproc *p2) {
 static void ImprimirPreproc(TPreproc *p) {
     TDadoPreproc *d = p->dado;
 
-    printf("\nPagina: %d, Contagem: %d, TF-IDF: %f", d->pag, d->contagem, d->tf_idf);
+    printf("\n(Pagina: %d\t|\tContagem: %d\t|\tTF-IDF: %f)", d->pag, d->contagem, d->tf_idf);
 }
 
 TPreproc* CriarPreproc(int pag, int contagem, double tf_idf) {
