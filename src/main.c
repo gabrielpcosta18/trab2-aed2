@@ -71,7 +71,7 @@ TInteiro *CriarInteiro(int x) {
 int main() {
     printf("Inicio\n");
     FILE *fw = fopen("../base/resultados.txt", "w");
-    FILE *base = fopen("../base/baseGuarani", "r");
+    FILE *base = fopen("../base/baseTeste", "r");
     int i = 0, n_docs_total = 0, n_palavras_pa = 0;
     char *pal;
     char *stopword = malloc(sizeof(char) * 30);
@@ -80,7 +80,7 @@ int main() {
     TDicionarioEstatico *sw_dicio;
 
     FILE *fstop = fopen("../base/stopwords_pt", "r");
-    
+
     for (;lerPalavra(fstop, stopword) != EOF; i++) {
         stopwords[i] = CriarStringAED(stopword);
         stopword = malloc(sizeof(char) * 30);
@@ -121,7 +121,10 @@ int main() {
         pal = malloc(sizeof(char) * 30);
 	}
 
+    dict->imprimir(dict);
+
     fclose(fw);
     printf("EHNOIS");
+    while(1);
     return 0;
 }
