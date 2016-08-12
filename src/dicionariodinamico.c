@@ -7,7 +7,7 @@
 #include "listaencadeada.h"
 #include "comparavel.h"
 
-#define RANDOMIC_VERIFICATION 200
+#define REHASH_A_CADA_N_ELEMENTOS 5000
 
 typedef struct dado {
     TVetorDinamico *dadov;
@@ -66,22 +66,17 @@ static int Hash(int chave, int tam) {
 }
 
 
-static void* InserirSemReHash(TDicionarioDinamico *dict, void *e) {
-    TDado *d = dict->dado;
+static void* InserirSemReHash(TDicionarioDinamico **dict, void *e) {
+    TDado *d = (*dict)->dado;
     TVetorDinamico *v = d->dadov;
     TComparavel *c = e;
-    int boolean = (rand()%RANDOMIC_VERIFICATION) == 0;
-    int tams = v->tamanho(v);
+    //int boolean = (rand()%RANDOMIC_VERIFICATION) == 0;
     int pos = Hash(c->recuperarChave(c), v->tamanho(v));
 
     TListaEncadeada *le = v->acessar(v, pos);
     int tam = le->inserir(le, e);
 
     d->ocupacao++;
-    free(d);
-    free(v);
-    free(c);
-    free(le);
     return e;
 }
 
@@ -91,6 +86,8 @@ static TDicionarioDinamico* RecriarHash(TDicionarioDinamico *dict) {
     //AnaliseDicionario(dict);
 
     TDicionarioDinamico *novoDict = CriarDicionarioDinamico(v->tamanho(v)*2);
+    TDado *dd = novoDict->dado;
+    int toc = dd->dadov->tamanho(dd->dadov);
     void* atual;
 
     for(int i = 0; i < v->tamanho(v); i++) {
@@ -98,7 +95,7 @@ static TDicionarioDinamico* RecriarHash(TDicionarioDinamico *dict) {
         atual = l->remover_primeiro_elemento(l);
 
         while(atual != NULL) {
-            InserirSemReHash(novoDict, atual);
+            InserirSemReHash(&novoDict, atual);
             atual = l->remover_primeiro_elemento(l);
             //atual = NULL;
         }
@@ -133,7 +130,7 @@ static void* Inserir(TDicionarioDinamico **dict, void *e) {
     TDado *d = (*dict)->dado;
     TVetorDinamico *v = d->dadov;
     TComparavel *c = e;
-    int boolean = (rand()%RANDOMIC_VERIFICATION) == 0;
+    int boolean = ((d->ocupacao + 1) % REHASH_A_CADA_N_ELEMENTOS) == 0;
     int pos = Hash(c->recuperarChave(c), v->tamanho(v));
 
     TListaEncadeada *le = v->acessar(v, pos);

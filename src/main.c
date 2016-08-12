@@ -126,7 +126,7 @@ int main() {
 
 	//dict->imprimir(dict);
     fclose(fw);
-    free(fw);
     printf("EHNOIS");
+    while(1);
     return 0;
 }
