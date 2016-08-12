@@ -3,7 +3,7 @@
 
 typedef struct dicionarioDinamico TDicionarioDinamico;
 typedef void* (*TInserirDicionarioDinamico)(TDicionarioDinamico**, void*);
-typedef void* (*TBuscarDicionarioDinamico)(TDicionarioDinamico*, void*);
+typedef void* (*TBuscarDicionarioDinamico)(TDicionarioDinamico**, void*);
 typedef void (*TRemoverDicionarioDinamico)(TDicionarioDinamico*, void*);
 typedef void (*TDestruirDicionarioDinamico)(TDicionarioDinamico**);
 typedef void (*TImprimirDicionarioDinamico)(TDicionarioDinamico*);
