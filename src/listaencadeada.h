@@ -9,6 +9,7 @@ typedef int (*TTamanhoListaEncadeada)(TListaEncadeada*);
 typedef void (*TImprimirListaEncadeada)(TListaEncadeada*);
 typedef void (*TDestruirListaEncadeada)(TListaEncadeada*);
 typedef void* (*TRemoverPrimeiroElemento)(TListaEncadeada*);
+typedef short (*TVaziaListaEncadeada)(TListaEncadeada*);
 
 typedef short (*TComparaElementosListaEncadeada)(void*, void*);
 struct listaEncadeada
@@ -23,6 +24,7 @@ struct listaEncadeada
 	TDestruirListaEncadeada destruir;
     TRemoverPrimeiroElemento remover_primeiro_elemento;
 	TComparaElementosListaEncadeada compara_elementos;
+	TVaziaListaEncadeada vazia;
 };
 
 TListaEncadeada* CriarListaEncadeada();

@@ -171,6 +171,12 @@ static TNo* CriarNo() {
     return n;
 }
 
+short VaziaListaEncadeada(TListaEncadeada *l) {
+    TDado *d = l->dado;
+
+    return d->inicio == NULL;
+}
+
 TListaEncadeada* CriarListaEncadeada() {
     TListaEncadeada *l = malloc(sizeof(TListaEncadeada));
     TDado *d = malloc(sizeof(TDado));
@@ -187,6 +193,7 @@ TListaEncadeada* CriarListaEncadeada() {
 	l->destruir = DestruirLista;
     l->remover_primeiro_elemento = RemoverPrimeiroElemento;
 	l->compara_elementos = NULL;
+    l->vazia = VaziaListaEncadeada;
 
     return l;
 }

@@ -19,4 +19,5 @@ struct dicionarioDinamico {
 };
 
 TDicionarioDinamico* CriarDicionarioDinamico(int tam);
+void AnaliseDicionario(TDicionarioDinamico *dict);
 #endif

@@ -72,7 +72,7 @@ TInteiro *CriarInteiro(int x) {
 int main() {
     printf("Inicio\n");
     FILE *fw = fopen("../base/resultados.txt", "w");
-    FILE *base = fopen("../base/baseGuarani", "r");
+    FILE *base = fopen("../base/baseAventuras", "r");
     int i = 0, n_pags_total = 0, n_palavras_pa = 0;
     char *pal;
     char *stopword = malloc(sizeof(char) * 30);
@@ -166,6 +166,7 @@ int main() {
                 }
                 break;
             case '2':
+                AnaliseDicionario(dict);
                 break;
             case '3':
                 exit = 1;

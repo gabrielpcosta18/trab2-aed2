@@ -7,7 +7,7 @@
 #include "listaencadeada.h"
 #include "comparavel.h"
 
-#define RANDOMIC_VERIFICATION 371
+#define RANDOMIC_VERIFICATION 40
 
 typedef struct dado {
     TVetorDinamico *dadov;
@@ -16,10 +16,10 @@ typedef struct dado {
 
 static TDado* CriarDado();
 
-static void AnaliseDicionario(TDicionarioDinamico *dict) {
+void AnaliseDicionario(TDicionarioDinamico *dict) {
     TDado *d = dict->dado;
     TVetorDinamico *v = d->dadov;
-
+    TListaEncadeada *l;
     double fatorCargaAte10Maior = 0;
     double fatorCargaAte30Maior = 0;
     double fatorCargaMaior30 = 0;
@@ -28,10 +28,23 @@ static void AnaliseDicionario(TDicionarioDinamico *dict) {
     double fatorCargaMenor30 = 0;
     double fatorCarga = 0, calc = 0;
 
+    printf("Ocupacao: %d, Tamanho da Tabela: %d, ", d->ocupacao, v->tamanho(v));
+
     fatorCarga = ((double)d->ocupacao + 1)/(double)v->tamanho(v);
+
+
+    int posicoes_vazias = 0;
+
+    for (int i = 0; i < v->tamanho(v); i++) {
+        l = v->acessar(v, i);
+        posicoes_vazias += l->vazia(l);
+    }
+
+    printf("Fator de Carga: %f\nNum de posicoes vazias: %d, Porcentagem Util da Tabela Hash: %.2f%\n", fatorCarga, posicoes_vazias, (1.0 - (double) posicoes_vazias / (double)v->tamanho(v)) * 100.0);
+
     //printf("Tamanho da tabela: %d | Ocupacao: %d | Fator de Carga: %f\n", v->tamanho(v), d->ocupacao, fatorCarga);
     for(int i = 0; i < v->tamanho(v); i++) {
-        TListaEncadeada *l = v->acessar(v, i);
+        l = v->acessar(v, i);
 
         calc = ((double) l->tamanho(l))/fatorCarga;
         //printf("Calc: %f Tamanho Lista encadeada: %d\n", calc, l->tamanho(l));
