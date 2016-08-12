@@ -9,6 +9,7 @@
 #include "stringaed.h"
 #include "dicionariodinamico.h"
 #include <time.h>
+#include "termo.h"
 
 short caracterEhValido(char c) {
     return (97 <= c && c <= 122) //a-z
@@ -72,7 +73,7 @@ int main() {
     printf("Inicio\n");
     FILE *fw = fopen("../base/resultados.txt", "w");
     FILE *base = fopen("../base/baseTeste", "r");
-    int i = 0, n_docs_total = 0, n_palavras_pa = 0;
+    int i = 0, n_pags_total = 0, n_palavras_pa = 0;
     char *pal;
     char *stopword = malloc(sizeof(char) * 30);
 
@@ -104,16 +105,24 @@ int main() {
         if (sw_dicio->buscar(sw_dicio, CriarStringAED(pal)) == NULL) {
             if (strcmp(pal, "pa") == 0) {
                 if (!primeiraExec) {
-                    palavras_por_pag->inserir(palavras_por_pag, CriarInteiro(n_palavras_pa) ,n_docs_total - 1);
+                    palavras_por_pag->inserir(palavras_por_pag, CriarInteiro(n_palavras_pa) ,n_pags_total - 1);
                 }
                 else primeiraExec = 0;
 
-                n_docs_total++;
+                n_pags_total++;
                 n_palavras_pa = 0;
             }
             else {
-                //fprintf(fw, "%s\n", pal);
-                dict->inserir(&dict, CriarStringAED(pal));
+                fprintf(fw, "%s\n", pal);
+                TTermo *termonovo = CriarTermo(pal);
+                TTermo *termobusca = dict->buscar(&dict, termonovo);
+
+                if (termobusca == NULL)
+                    dict->inserir(&dict, termonovo);
+                else {
+                    //termobusca->atualizar_termo(termobusca, n_pags_total);
+                }
+
                 n_palavras_pa++;
             }
         }
@@ -125,6 +134,5 @@ int main() {
 
     fclose(fw);
     printf("EHNOIS");
-    while(1);
     return 0;
 }
