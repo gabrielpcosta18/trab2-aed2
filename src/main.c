@@ -69,8 +69,7 @@ TInteiro *CriarInteiro(int x) {
 }
 
 int main() {
-    //TVetorDinamico *v = CriarVetorDinamico(1);
-    //TListaEncadeada *v = CriarListaEncadeada();
+    printf("Inicio\n");
     FILE *fw = fopen("../base/resultados.txt", "w");
     FILE *base = fopen("../base/baseGuarani", "r");
     int i = 0, n_docs_total = 0, n_palavras_pa = 0;
@@ -81,7 +80,7 @@ int main() {
     TDicionarioEstatico *sw_dicio;
 
     FILE *fstop = fopen("../base/stopwords_pt", "r");
-
+    
     for (;lerPalavra(fstop, stopword) != EOF; i++) {
         stopwords[i] = CriarStringAED(stopword);
         stopword = malloc(sizeof(char) * 30);
@@ -91,7 +90,6 @@ int main() {
 
     sw_dicio = CriarDicionarioEstatico((void**)stopwords, 392);
 
-    //fclose(fw);
     fclose(fstop);
     free(stopword);
 
@@ -121,12 +119,9 @@ int main() {
         }
 
         pal = malloc(sizeof(char) * 30);
-        //pal = malloc(sizeof(char) * 300);
 	}
 
-	dict->imprimir(dict);
     fclose(fw);
     printf("EHNOIS");
-    while(1);
     return 0;
 }
