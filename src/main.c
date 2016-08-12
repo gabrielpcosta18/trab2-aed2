@@ -59,66 +59,20 @@ int compara_string_aed(const void *e1, const void *e2) { // compara strings arma
 
 typedef struct {
     int x;
-} TInteger;
+} TInteiro;
 
+TInteiro *CriarInteiro(int x) {
+    TInteiro *i = malloc(sizeof(TInteiro));
+    i->x = x;
+
+    return i;
+}
 
 int main() {
-    srand(time(NULL));
-    TDicionarioDinamico *dict = CriarDicionarioDinamico(10);
-    TStringAED *st;
-    char *teste = malloc(sizeof(char) * 30);
-    char *num = malloc(sizeof(char) * 5);
-
-    for(int i = 0; i < 34; i++) {
-        //char a = i + 48;
-        strcpy(teste, "Bagulha");
-        itoa(i, num, 10);
-
-        st = CriarStringAED(strcat(teste, num));
-        //st = CriarStringAED("Bagulha");
-        dict->inserir(dict, st);
-
-        teste = malloc(sizeof(char) * 30);
-        num = malloc(sizeof(char) * 5);
-        //printf("%d ", aux->value);
-    }
-
-    TStringAED *aux = dict->buscar(dict, CriarStringAED("Bagulha13"));
-
-    printf("%s", aux == NULL? "Achou n" : "Achou!");
-    /*TListaEncadeada *l = CriarListaEncadeada();
-    l->imprimir_lista(l);
-    l->remover_primeiro_elemento(l);
-    l->inserir(l, CriarStringAED("Bagulha"));
-    l->inserir(l, CriarStringAED("Gabriel"));
-    l->inserir(l, CriarStringAED("Ruan"));
-    l->inserir(l, CriarStringAED("Cadeira"));
-    l->inserir(l, CriarStringAED("Comunista"));
-    l->imprimir_lista(l);
-    l->remover_primeiro_elemento(l);
-    l->imprimir_lista(l);
-    l->remover_primeiro_elemento(l);
-    l->imprimir_lista(l);
-    l->remover_primeiro_elemento(l);
-    l->imprimir_lista(l);
-    l->remover_primeiro_elemento(l);
-    l->imprimir_lista(l);
-    l->remover_primeiro_elemento(l);
-    l->imprimir_lista(l);
-    l->remover_primeiro_elemento(l);
-    l->imprimir_lista(l);
-    l->remover_primeiro_elemento(l);
-l->imprimir_lista(l);
-    l->remover_primeiro_elemento(l);
-    l->imprimir_lista(l);
-    l->remover_primeiro_elemento(l);
-
-    l->imprimir_lista(l);*/
-
-    /*
     //TVetorDinamico *v = CriarVetorDinamico(1);
     //TListaEncadeada *v = CriarListaEncadeada();
-    //FILE *fw = fopen("../base/resultados.txt", "w");
+    FILE *fw = fopen("../base/resultados.txt", "w");
+    FILE *base = fopen("../base/baseGuarani", "r");
     int i = 0, n_docs_total = 0, n_palavras_pa = 0;
     char *pal;
     char *stopword = malloc(sizeof(char) * 30);
@@ -144,22 +98,35 @@ l->imprimir_lista(l);
     i = 0;
     pal = malloc(sizeof(char) * 30);
 
-	while(lerPalavra((FILE*)stdin, pal) != EOF){
+    TDicionarioDinamico *dict = CriarDicionarioDinamico(1000);
+
+    TVetorDinamico *palavras_por_pag = CriarVetorDinamico(300);
+    int primeiraExec = 1;
+	while(lerPalavra((FILE*)base, pal) != EOF){
         if (sw_dicio->buscar(sw_dicio, CriarStringAED(pal)) == NULL) {
             if (strcmp(pal, "pa") == 0) {
+                if (!primeiraExec) {
+                    palavras_por_pag->inserir(palavras_por_pag, CriarInteiro(n_palavras_pa) ,n_docs_total - 1);
+                }
+                else primeiraExec = 0;
+
                 n_docs_total++;
                 n_palavras_pa = 0;
             }
             else {
-                n_palavras_pa = 0;
+                fprintf(fw, "%s\n", pal);
+                dict->inserir(&dict, CriarStringAED(pal));
+                n_palavras_pa++;
             }
         }
 
-        //free(pal);
+        pal = malloc(sizeof(char) * 30);
         //pal = malloc(sizeof(char) * 300);
 	}
 
-	printf("%d paginas", n_docs_total);*/
-
+	//dict->imprimir(dict);
+    fclose(fw);
+    free(fw);
+    printf("EHNOIS");
     return 0;
 }

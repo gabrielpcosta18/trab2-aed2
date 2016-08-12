@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "termo.h"
 
 int n_containing(TTermo *t) {
@@ -5,12 +6,30 @@ int n_containing(TTermo *t) {
     return l->tamanho(l);
 }
 
-static short comparar_termo_pag(TTermo *t1, TTermo *t2) {
-    TPreproc *p1 = t1->dado, *p2 = t2->dado;
-    int pg1 = p1->p
+static short comparar_pag(TPreproc *p1, TPreproc *p2) {
+    int pg1 = p1->dado->pag, pg2 = p2->dado->pag;
+
+    if (pg1 == pg2) return 0;
+    else if (pg1 > pg2) return 1;
+    else return -1;
 }
 
-double tf(TTermo *t, int pag) {
+double tf(TTermo *t, int pag, int n_total_palavras_pag) {
     TListaEncadeada *l = t->dado->ocorrencias;
+    TPreproc *aux = malloc(sizeof(TPreproc));
+    aux->dado->pag = pag;
+    aux->compara = comparar_pag;
+
+    TPreproc *p = l->buscar(l, aux);
+    if (p != NULL) return ((double) p->dado->tf / (double) n_total_palavras_pag);
+    else return 0.0;
+}
+
+double idf(TTermo *t, int n_total_pag) {
+    return ((double) n_total_pag / n_containing(t));
+}
+
+double tf_idf(TTermo *t, int pag, int n_total_pag) {
 
 }
+
