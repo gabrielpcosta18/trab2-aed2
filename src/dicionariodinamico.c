@@ -62,12 +62,12 @@ void AnaliseDicionario(TDicionarioDinamico *dict) {
             fatorCargaMenor30 += 1.0;
     }
 
-    printf("Fator Carga at%c 10 maior: %f\n", 130, fatorCargaAte10Maior/(v->tamanho(v)*1.0));
-    printf("Fator Carga at%c 30 maior: %f\n", 130, fatorCargaAte30Maior/(v->tamanho(v)*1.0));
-    printf("Fator Carga maior 30: %f\n", fatorCargaMaior30/(v->tamanho(v)*1.0));
-    printf("Fator Carga at%c 10 menor: %f\n", 130, fatorCargaAte10Menor/(v->tamanho(v)*1.0));
-    printf("Fator Carga at%c 30 menor: %f\n", 130, fatorCargaAte30Menor/(v->tamanho(v)*1.0));
-    printf("Fator Carga menor 30: %f\n\n", fatorCargaMenor30/(v->tamanho(v)*1.0));
+    printf("Fator Carga at%c 10% maior: %f\n", 130, fatorCargaAte10Maior/(v->tamanho(v)*1.0));
+    printf("Fator Carga at%c 30% maior: %f\n", 130, fatorCargaAte30Maior/(v->tamanho(v)*1.0));
+    printf("Fator Carga acima de 30%: %f\n", fatorCargaMaior30/(v->tamanho(v)*1.0));
+    printf("Fator Carga at%c 10% menor: %f\n", 130, fatorCargaAte10Menor/(v->tamanho(v)*1.0));
+    printf("Fator Carga at%c 30% menor: %f\n", 130, fatorCargaAte30Menor/(v->tamanho(v)*1.0));
+    printf("Fator Carga menor 30%: %f\n\n", fatorCargaMenor30/(v->tamanho(v)*1.0));
 }
 
 
@@ -109,7 +109,7 @@ static TDicionarioDinamico* RecriarHash(TDicionarioDinamico **dict) {
     TDado *d = (*dict)->dado;
     TVetorDinamico *v = d->dadov;
 
-    TDicionarioDinamico *novoDict = CriarDicionarioDinamico((int)(v->tamanho(v) * 2));
+    TDicionarioDinamico *novoDict = CriarDicionarioDinamico((int)(v->tamanho(v) * RAZAO_AUREA));
     TDado *dd = novoDict->dado;
     int toc = dd->dadov->tamanho(dd->dadov);
     void* atual;
