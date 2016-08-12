@@ -76,7 +76,7 @@ int main() {
     int i = 0, n_pags_total = 0, n_palavras_pa = 0;
     char *pal;
     char *stopword = malloc(sizeof(char) * 30);
-
+    srand(time(NULL));
     TStringAED **stopwords = malloc(sizeof(TStringAED) * 392);
     TDicionarioEstatico *sw_dicio;
 

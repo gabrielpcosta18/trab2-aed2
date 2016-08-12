@@ -142,12 +142,13 @@ static TDicionarioDinamico* verificarEstadoTabela(TDicionarioDinamico **dict) {
 
     //double fatorCarga = (double)d->ocupacao/(double)v->tamanho(v);
     double fatorCarga = 3.0;
+    double criterio = 1.1;
     double agrupamento = (calc/d->ocupacao) - fatorCarga;
     //AnaliseDicionario(*dict);
 
     //printf("Agrupamento:%f Criterio: %f Fator Carga: %f\n", agrupamento, log(v->tamanho(v))*5, fatorCarga);
-    printf("Agrupamento:%f Criterio: %d Fator Carga: %f\n", agrupamento, 4, fatorCarga);
-    if(agrupamento >= 2)
+    //printf("Agrupamento:%f Criterio: %f Fator Carga: %f\n", agrupamento, criterio, fatorCarga);
+    if(agrupamento >= criterio)
         return RecriarHash(dict);
 
     return NULL;
@@ -157,7 +158,10 @@ static void* Inserir(TDicionarioDinamico **dict, void *e) {
     TDado *d = (*dict)->dado;
     TVetorDinamico *v = d->dadov;
     TComparavel *c = e;
-    int boolean = ((d->ocupacao + 1) % RANDOMIC_VERIFICATION) == 0;
+
+    int r = rand();
+    //if (d->ocupacao < 50) printf("%d\n", r % RANDOMIC_VERIFICATION);
+    int boolean = (r % RANDOMIC_VERIFICATION) == 0;
     int pos = Hash(c->recuperarChave(c), v->tamanho(v));
 
     TListaEncadeada *le = v->acessar(v, pos);
