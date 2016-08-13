@@ -81,25 +81,6 @@ static void* Buscar(TListaEncadeada *l, void *e) {
     return viajante;
 }
 
-void* BuscarDebug(TListaEncadeada *l, void *e) {
-    TDado *d = l->dado;
-    TNo *viajante = d->inicio;
-    TComparavel *c = e;
-    int i = 1;
-
-
-    while(viajante != NULL) {
-        if(c->compara(viajante->dado, e) == 0) break;
-        viajante = viajante->prox;
-        i++;
-    }
-
-    printf("\n%d comparacoes\n", i);
-
-    if (viajante == NULL) return NULL;
-    else return viajante->dado;
-}
-
 static void ImprimirLista(TListaEncadeada *l) {
     TDado *d = l->dado;
     TNo *pesq = d->inicio;

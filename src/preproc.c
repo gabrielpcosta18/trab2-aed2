@@ -1,4 +1,6 @@
 #include "preproc.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 short comparar_pag(TPreproc *p1, TPreproc *p2) {
     int pg1 = p1->dado->pag, pg2 = p2->dado->pag;
@@ -19,7 +21,7 @@ short CompararTfidf(TPreproc *p1, TPreproc *p2) {
 static void ImprimirPreproc(TPreproc *p) {
     TDadoPreproc *d = p->dado;
 
-    printf("\n(Pagina: %d\t|\tContagem: %d\t|\tTF-IDF: %f)", d->pag, d->contagem, d->tf_idf);
+    printf("\n(Pagina: %d\t|\tContagem: %d\t|\tTF-IDF: %f)", d->pag + 1, d->contagem, d->tf_idf);
 }
 
 TPreproc* CriarPreproc(int pag, int contagem, double tf_idf) {

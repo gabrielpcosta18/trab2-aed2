@@ -55,7 +55,7 @@ int compara_string_aed(const void *e1, const void *e2) { // compara strings arma
     TStringAED *a = *(TStringAED**) e1;
     TStringAED *b = *(TStringAED**) e2;
 
-	return strcmp(a->string, b->string);
+	return strcmp((char*)a->string, (char*) b->string);
 }
 
 typedef struct {
@@ -70,10 +70,10 @@ TInteiro *CriarInteiro(int x) {
 }
 
 int main() {
-    printf("Inicio\n");
-    FILE *fw = fopen("../base/resultados.txt", "w");
-    FILE *base = fopen("../base/baseAventuras", "r");
-    int i = 0, n_pags_total = 0, n_palavras_pa = 0;
+    FILE *base = fopen("../base/baseParalelismo", "r");
+
+
+    int i = 0, n_pags_total = -1, n_palavras_pa = 0;
     char *pal;
     char *stopword = malloc(sizeof(char) * 30);
     srand(time(NULL));
@@ -100,42 +100,63 @@ int main() {
     TDicionarioDinamico *dict = CriarDicionarioDinamico(307);
 
     TVetorDinamico *palavras_por_pag = CriarVetorDinamico(300);
-    int primeiraExec = 1;
+    TVetorDinamico *array_pre = CriarVetorDinamico(5000);
+    //->
+    int i_array_pre = 0;
+
 	while(lerPalavra((FILE*)base, pal) != EOF){
         if (sw_dicio->buscar(sw_dicio, CriarStringAED(pal)) == NULL) {
             if (strcmp(pal, "pa") == 0) {
-                if (!primeiraExec) {
-                    palavras_por_pag->inserir(palavras_por_pag, CriarInteiro(n_palavras_pa) ,n_pags_total - 1);
-                }
-                else primeiraExec = 0;
-
+                palavras_por_pag->inserir(palavras_por_pag, CriarInteiro(0) ,n_pags_total + 1);
                 n_pags_total++;
-                n_palavras_pa = 0;
             }
             else {
                 //fprintf(fw, "%s\n", pal);
-
+                TInteiro *ii = palavras_por_pag->acessar(palavras_por_pag, n_pags_total);
+                ii->x++;
                 TTermo *termonovo = CriarTermo(pal);
-                TTermo *termobusca = dict->buscar(&dict, termonovo);
+                TTermo *termobusca = BuscaVetorDinamico(array_pre, termonovo);
 
                 if (termobusca == NULL) {
                     termonovo->atualizar_termo(termonovo, n_pags_total);
-                    dict->inserir(&dict, termonovo);
+                    array_pre->inserir(array_pre, termonovo, i_array_pre);
+                    i_array_pre++;
                 }
                 else {
                     termobusca->atualizar_termo(termobusca, n_pags_total);
                 }
-
-                n_palavras_pa++;
             }
         }
 
         pal = malloc(sizeof(char) * 30);
 	}
 
-    //dict->imprimir(dict);
+    for (int i = 0; i < i_array_pre; i++) {
+        TTermo *t = array_pre->acessar(array_pre, i);
+        TListaEncadeada *l = t->dado->ocorrencias;
+        int tamanho_lista = l->tamanho(l);
+        TListaEncadeada *lord = CriarListaEncadeadaOrdenada(CompararTfidf);
 
-    fclose(fw);
+
+        TPreproc *pesq = l->remover_primeiro_elemento(l);
+
+        while (pesq != NULL) {
+            TInteiro *inteiro = palavras_por_pag->acessar(palavras_por_pag, pesq->dado->pag);
+            atribuir_tf_idf(pesq, tamanho_lista, n_pags_total, inteiro->x);
+
+            lord->inserir(lord, pesq);
+
+            pesq = l->remover_primeiro_elemento(l);
+        }
+
+        free(l);
+        free(t->dado->ocorrencias);
+        t->dado->ocorrencias = lord;
+
+        dict->inserir(&dict, t);
+    }
+
+    DestruirVetorDinamico(array_pre);
 
     char option = 'a';
     int exit = 0;
@@ -162,7 +183,7 @@ int main() {
                     termoaux->imprimir(termoaux);
                 }
                 else {
-                    printf("Palavra não encontrada.");
+                    printf("Palavra nao encontrada.");
                 }
                 break;
             case '2':

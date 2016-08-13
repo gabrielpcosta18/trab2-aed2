@@ -2,7 +2,8 @@
 #include "vetorDinamico.h"
 #include <math.h>
 #include "comparavel.h"
-#include "stdio.h"
+#include <stdio.h>
+#define RAZAO_AUREA 1.618033988
 
 typedef struct dado {
 	int tam;
@@ -10,9 +11,16 @@ typedef struct dado {
 } TDado;
 
 static void redimensionar(TVetorDinamico* v, int novoTam) {
+    /*TDado *d = v->dado;
+    int tam_antigo = d->tam;
+    d->tam = novoTam;
+    realloc(d->elementos, sizeof(void*) * d->tam);*/
+
+
+
 	TDado *d = malloc(sizeof(TDado));
 	d->tam = novoTam;
-	d->elementos = malloc(sizeof(void*)*novoTam);
+	d->elementos = calloc(novoTam, sizeof(void*));
 
 	int i;
 	for(i = 0; i < ((TDado*)(v->dado))->tam; i++) {
@@ -27,9 +35,8 @@ static void redimensionar(TVetorDinamico* v, int novoTam) {
 static void Inserir(TVetorDinamico* v, void* d, int pos) {
 	TDado *dado = v->dado;
 	if(pos >= dado->tam) {
-        printf("VETOR REDIMENSIONOU");
-		int calc = pow(2, floor(log2(pos) + 2));
-		redimensionar(v, calc);
+		//int calc = pow(2, floor(log2(pos) + 2));
+		redimensionar(v, (int)(dado->tam * RAZAO_AUREA));
 	}
 	((TDado*)(v->dado))->elementos[pos] = d;
 }
@@ -55,13 +62,25 @@ static void Imprimir(TVetorDinamico *v) {
     }
 }
 
+void* BuscaVetorDinamico(TVetorDinamico *v, void *e) {
+    TDado *d = v->dado;
+    void **elem = d->elementos;
+    TComparavel *c = e;
+
+    for (int i = 0; i < v->tamanho(v); i++) {
+        if (elem[i] != NULL)
+            if (c->compara(c, elem[i]) == 0) return elem[i];
+    }
+
+    return NULL;
+}
 
 //construtor
 TVetorDinamico* CriarVetorDinamico(int tam) {
 	TVetorDinamico *v = malloc(sizeof(TVetorDinamico));
 	TDado *d = malloc(sizeof(TDado));
 
-	d->elementos = malloc(sizeof(void*)*tam);
+	d->elementos = calloc(tam, sizeof(void*));
 
 	for (int i = 0; i < tam; i++) {
         d->elementos[i] = NULL;
@@ -80,7 +99,7 @@ TVetorDinamico* CriarVetorDinamico(int tam) {
 //destrutor
 void DestruirVetorDinamico(TVetorDinamico* v) {
 	TDado *d = v->dado;
-	
+
 	for(int i = 0; i < d->tam; i++) {
 		//free(d->elementos[i]);
 	}

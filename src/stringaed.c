@@ -6,7 +6,8 @@
 #include <math.h>
 
 short ComparaStringAED(void *e1, void *e2) {
-	return strcmp(((TStringAED*)e1)->string, ((TStringAED*)e2)->string);
+	return strcmp((char*)((TStringAED*)e1)->string, (char*)((TStringAED*)e2)->string);
+
 }
 
 void imprimirStringAED(TStringAED *i) {

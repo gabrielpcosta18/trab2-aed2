@@ -1,27 +1,22 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "termo.h"
 #include "preproc.h"
 
-int n_containing(TTermo *t) {
-    TListaEncadeada *l = t->dado->ocorrencias;
-    return l->tamanho(l);
+static double tf(int contagem, int n_total_palavras_pag) {
+    return ((double) contagem / (double) n_total_palavras_pag);
 }
 
-double tf(TTermo *t, int pag, int n_total_palavras_pag) {
-    TListaEncadeada *l = t->dado->ocorrencias;
-    TPreproc *aux = CriarPreproc(pag, 0, 0);
-
-    TPreproc *p = l->buscar(l, aux);
-    if (p != NULL) return ((double) p->dado->contagem / (double) n_total_palavras_pag);
-    else return 0.0;
+static double idf(int n_total_pag, int n_cont) {
+    return ((double) n_total_pag / (double)n_cont);
 }
 
-double idf(TTermo *t, int n_total_pag) {
-    return ((double) n_total_pag / n_containing(t));
-}
+void atribuir_tf_idf(TPreproc *p, int n_cont, int n_total_pag, int n_total_palavras_pag) {
 
-double tf_idf(TTermo *t, int pag, int n_total_pag) {
+    p->dado->tf_idf = tf(p->dado->contagem, n_total_palavras_pag) * idf(n_total_pag, n_cont);
 
+
+    //tf(t, pag, n_total_palavras_pag) * idf(t, n_total_pag);
 }
 
 static TDadoTermo* CriarDadoTermo(char *palavra) {
@@ -47,7 +42,7 @@ static void ImprimirTermo(TTermo *t) {
     printf("\n----------------------------------\nPalavra: ");
     s->imprimir(s);
     TListaEncadeada *l = t->dado->ocorrencias;
-    l->imprimir_lista(l);
+    l->imprimir_lista_n(l, 5);
     printf("\n----------------------------------\n\n");
 }
 
@@ -74,4 +69,6 @@ TTermo* CriarTermo(char *palavra) {
     t->recuperarChave = RecuperarChaveTermo;
     t->imprimir = ImprimirTermo;
     t->atualizar_termo = AtualizarTermo;
+
+    return t;
 }

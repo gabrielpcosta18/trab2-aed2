@@ -8,6 +8,9 @@ typedef void (*TInserir)(TVetorDinamico*,void*, int);
 typedef void* (*TAcessar)(TVetorDinamico*, int);
 typedef int (*TTamanho)(TVetorDinamico*);
 typedef void (*TImprimirVetorDinamico)(TVetorDinamico*);
+
+void* BuscaVetorDinamico(TVetorDinamico* v, void* e);
+
 //construtor
 TVetorDinamico *CriarVetorDinamico(int);
 

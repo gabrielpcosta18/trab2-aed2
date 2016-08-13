@@ -1,6 +1,7 @@
 #ifndef _TERMO_
 #define _TERMO_
 #include "stringaed.h"
+#include "preproc.h"
 #include "listaencadeada.h"
 
 typedef struct termo TTermo;
@@ -12,8 +13,8 @@ typedef void (*TImprimirTermo)(TTermo*);
 typedef unsigned long (*TRecuperarChaveTermo)(TTermo*);
 typedef void (*TAtualizarTermo)(TTermo*, int);
 
-double tf(TTermo *t, int pag, int n_total_palavras_pag);
-int n_containing(TTermo *t);
+void atribuir_tf_idf(TPreproc *p, int n_cont, int n_total_pag, int n_total_palavras_pag);
+void calcular_tfidfs(TTermo *t);
 
 struct dado {
     TStringAED *palavra;

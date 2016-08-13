@@ -7,11 +7,12 @@
 #include "listaencadeada.h"
 #include "comparavel.h"
 #define RAZAO_AUREA 1.618033988
-#define RANDOMIC_VERIFICATION 2000
+#define FATOR_DE_CARGA 3
 
 typedef struct dado {
     TVetorDinamico *dadov;
     int ocupacao;
+    int vezes_rehash;
 }TDado;
 
 static TDado* CriarDado();
@@ -28,7 +29,7 @@ void AnaliseDicionario(TDicionarioDinamico *dict) {
     double fatorCargaMenor30 = 0;
     double fatorCarga = 0, calc = 0;
 
-    printf("Ocupacao: %d, Tamanho da Tabela: %d, ", d->ocupacao, v->tamanho(v));
+    printf("Ocupacao: %d, Tamanho da Tabela: %d, Numero de ReHashs: %d\n", d->ocupacao, v->tamanho(v), d->vezes_rehash);
 
     fatorCarga = ((double)d->ocupacao + 1)/(double)v->tamanho(v);
 
@@ -108,7 +109,7 @@ static void* InserirSemReHash(TDicionarioDinamico **dict, void *e) {
 static TDicionarioDinamico* RecriarHash(TDicionarioDinamico **dict) {
     TDado *d = (*dict)->dado;
     TVetorDinamico *v = d->dadov;
-
+    d->vezes_rehash++;
     TDicionarioDinamico *novoDict = CriarDicionarioDinamico((int)(v->tamanho(v) * RAZAO_AUREA));
     TDado *dd = novoDict->dado;
     int toc = dd->dadov->tamanho(dd->dadov);
@@ -124,6 +125,7 @@ static TDicionarioDinamico* RecriarHash(TDicionarioDinamico **dict) {
         }
     }
 
+    dd->vezes_rehash = d->vezes_rehash;
     DestruirDicionario(dict);
     //AnaliseDicionario(novoDict);
     return novoDict;
@@ -141,9 +143,9 @@ static TDicionarioDinamico* verificarEstadoTabela(TDicionarioDinamico **dict) {
     }
 
     //double fatorCarga = (double)d->ocupacao/(double)v->tamanho(v);
-    double fatorCarga = 3.0;
+
     double criterio = 1.1;
-    double agrupamento = (calc/d->ocupacao) - fatorCarga;
+    double agrupamento = (calc/d->ocupacao) - FATOR_DE_CARGA;
     //AnaliseDicionario(*dict);
 
     //printf("Agrupamento:%f Criterio: %f Fator Carga: %f\n", agrupamento, log(v->tamanho(v))*5, fatorCarga);
@@ -161,7 +163,8 @@ static void* Inserir(TDicionarioDinamico **dict, void *e) {
 
     int r = rand();
     //if (d->ocupacao < 50) printf("%d\n", r % RANDOMIC_VERIFICATION);
-    int boolean = (r % RANDOMIC_VERIFICATION) == 0;
+    //int boolean = (r % RANDOMIC_VERIFICATION) == 0;
+    int boolean = d->ocupacao % FATOR_DE_CARGA;
     int pos = Hash(c->recuperarChave(c), v->tamanho(v));
 
     TListaEncadeada *le = v->acessar(v, pos);
@@ -190,7 +193,7 @@ static void* Buscar(TDicionarioDinamico **dict, void *e) {
     int pos = Hash(c->recuperarChave(c), v->tamanho(v));
     TListaEncadeada *le = v->acessar(v, pos);
 
-    return le->buscar(le, e);
+    return BuscarDebug(le, e);
 }
 
 static void Remover(TDicionarioDinamico *dict, void *e) {
@@ -212,7 +215,7 @@ static TDado* CriarDado(int tam) {
 
     d->dadov = v;
     d->ocupacao = 0;
-
+    d->vezes_rehash = 0;
     return d;
 }
 

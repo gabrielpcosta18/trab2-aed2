@@ -20,6 +20,6 @@ struct preproc {
     TImprimirPreproc imprimir;
 };
 
-
+TPreproc* CriarPreproc(int pag, int contagem, double tf_idf);
 
 #endif
